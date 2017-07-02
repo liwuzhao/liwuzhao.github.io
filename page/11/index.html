@@ -276,6 +276,137 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/09/2017-03-09-1526324/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/09/2017-03-09-1526324/" itemprop="url">报错记录<4></a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T09:27:00+08:00">
+                2017-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p><strong>1</strong></p>
+</blockquote>
+<p><a href="https://fullstack.xinshengdaxue.com/posts/76" target="_blank" rel="external">https://fullstack.xinshengdaxue.com/posts/76</a> Step 1. 设计 Post 的 model 架构<br>rails g model post content:text group_id:integer user_id:integer<br>跑成 rails g controller post content:text group_id:integer user_id:integer<br>最后回到上一分支重做</p>
+<p><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/yCWsk6qTdCVSJmcgqxYA_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8A%E5%8D%889.06.39.png" alt="屏幕快照 2017-03-09 上午9.06.39.png"></p>
+<p>询问助教应该如何删除这一命令生成的文件<br>**应该执行</p>
+<pre><code>rails d controller 错误的名字**
+</code></pre><blockquote>
+<p><strong>2</strong></p>
+</blockquote>
+<p>不是讨论组成员但是显示“你已经是本讨论版成员了！”<br><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/AOnPHvDT8X7Lw9TO0IOQ_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%885.11.49.png" alt="屏幕快照 2017-03-09 下午5.11.49.png"><br>回到groups<em>controller.rb 发现join的action写错<br>![屏幕快照 2017-03-09 下午9.09.05.png](<a href="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/j56ZQ81SbWRyzefpLmwS" target="_blank" rel="external">http://user-image.logdown.io/user/24669/blog/23678/post/1526324/j56ZQ81SbWRyzefpLmwS</a></em>%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%889.09.05.png)</p>
+<p>if的判断应该有！ 即不是群组成员时执行join，正确为<br><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/8h5HbnpJToWZjhyN1YSS_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%889.07.53.png" alt="屏幕快照 2017-03-09 下午9.07.53.png"></p>
+<blockquote>
+<p><strong>3</strong></p>
+</blockquote>
+<p><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/qoMjkEriQouEpMY3FXRD_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%8810.25.05.png" alt="屏幕快照 2017-03-09 下午10.25.05.png"><br>第二次出现这种问题，检查index.html.erb<br><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/aVHoWwYUQgK1aMwbV8n4_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%8811.02.08.png" alt="屏幕快照 2017-03-09 下午11.02.08.png"></p>
+<blockquote>
+<p><strong>4</strong></p>
+</blockquote>
+<p><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/knaW5cMnR8WYF71RyuVA_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%8810.36.31.png" alt="屏幕快照 2017-03-09 下午10.36.31.png"><br>在views/account/posts/index.html.erb里<br><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526324/9z8VK8xKRCC5c4oO9I6F_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%8811.04.54.png" alt="屏幕快照 2017-03-09 下午11.04.54.png"></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/08/2017-03-08-error-records3-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -896,7 +1027,7 @@ collection =&gt; @groups写成了collection =&gt; @group 少了一个s
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">105</span>
+                <span class="site-state-item-count">106</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

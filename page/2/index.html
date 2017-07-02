@@ -276,6 +276,129 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/13/2017-06-13-1948941/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/06/13/2017-06-13-1948941/" itemprop="url">ORID 6.13</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-13T16:00:00+08:00">
+                2017-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##Objective</p>
+<ul>
+<li>上课</li>
+<li>修改订单系统</li>
+<li>给复盘开个头</li>
+</ul>
+<p>##Reflective</p>
+<p> 平常</p>
+<p>##Interpretive</p>
+<p>可以专心做一件事是幸福的<br>打代码容易上瘾，最近要放一放，赶DDL和准备期末考试了</p>
+<p>##Decisional</p>
+<p>睡眠不足，早点睡<br>明天上课、线代作业、复习线代</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/10/2017-06-10-orid-610/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1432,139 +1555,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/02/2017-06-02-understanding-of-the-commodity-classification-view/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/02/2017-06-02-understanding-of-the-commodity-classification-view/" itemprop="url">【总结】对商品进行分类查看的理解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-02T11:04:00+08:00">
-                2017-06-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>筛选出分类后的产品，这里面分类是另建了一个model，和product关联起来的</p>
-<p>导向该分类的代码用这个</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;% Category.all.each do |category| %&gt;</div><div class="line">  &lt;li&gt;</div><div class="line">    &lt;%= link_to(category.name, products_path(c: category)) %&gt;</div><div class="line">  &lt;/li&gt;</div><div class="line">&lt;% end %&gt;</div></pre></td></tr></table></figure>
-<p>把<code>@category</code>这个key给c</p>
-<p>观察一下url</p>
-<p><code>http://localhost:3000/products?c=1</code>  1就是category_id</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span></span></div><div class="line">  <span class="keyword">if</span> params[<span class="symbol">:c</span>].blank?</div><div class="line">    @products = Product.published</div><div class="line">  <span class="keyword">else</span></div><div class="line">    @category = Category.find_by(params[<span class="symbol">:c</span>]) <span class="comment">#找出是哪个category</span></div><div class="line">    @products = Product.published.where(<span class="symbol">:category</span> =&gt; @category) <span class="comment">#找出这个category下的Job</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>用<code>Category.find_by(params[:c])</code>捞出key的信息（当前的category_id），赋值给<code>@category</code></p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@products = Product.published.where(<span class="symbol">:category</span> =&gt; @category)</div></pre></td></tr></table></figure>
-<p>最后就是捞出<code>category</code>(model)是<code>@category</code>(当前的category) 的Product</p>
-<p>设个断点看一下可以方便理解</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span></span></div><div class="line">  <span class="keyword">if</span> params[<span class="symbol">:c</span>].blank?</div><div class="line">    @products = Product.published</div><div class="line">  <span class="keyword">else</span></div><div class="line">    @category = Category.find_by(params[<span class="symbol">:c</span>]) <span class="comment">#找出是哪个category</span></div><div class="line"> +  binding.pry</div><div class="line">    @products = Product.published.where(<span class="symbol">:category</span> =&gt; @category) <span class="comment">#找出这个category下的Job</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>点进某个category，比如“会员卡”</p>
-<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1fg71pqjz0qj31b20oyjx4.jpg" alt=""></p>
-<p>这时候，<code>params[:c]</code>就是<em>1</em> （会员卡的category_id），<code>find_by</code>找出所有Category中id是1的category</p>
-<p>赋值后，<code>@category</code>就是当前的category了</p>
-<p>对当前分类产品的进行排序</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;li&gt;&lt;%= link_to(<span class="string">"价格从低到高"</span>, products_path(<span class="symbol">c:</span> @category, <span class="symbol">:order</span> =&gt; <span class="string">"价格从低到高"</span>)) %&gt;&lt;<span class="regexp">/li&gt;</span></div></pre></td></tr></table></figure>
-<p>可以自行修改</p>
-<p>观察一下Url</p>
-<p><code>http://localhost:3000/products?c=1&amp;order=价格从高到低</code></p>
-<p>说得还不够清晰，先当做一次整理，以后想得更明白了再修改</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1614,7 +1604,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">105</span>
+                <span class="site-state-item-count">106</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

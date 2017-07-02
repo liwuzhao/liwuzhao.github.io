@@ -276,7 +276,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/02/2017-06-02-1910714/">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/02/2017-06-02-understanding-of-the-commodity-classification-view/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wuzhao">
@@ -295,7 +295,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/06/02/2017-06-02-1910714/" itemprop="url">ORID 5.31</a></h1>
+                <a class="post-title-link" href="/2017/06/02/2017-06-02-understanding-of-the-commodity-classification-view/" itemprop="url">【总结】对商品进行分类查看的理解</a></h1>
         
 
         <div class="post-meta">
@@ -307,7 +307,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-02T11:03:00+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-02T11:04:00+08:00">
                 2017-06-02
               </time>
             
@@ -344,19 +344,28 @@
       
         
           
-            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><ul>
-<li>修改了landingpage</li>
-<li>分类后排序（还没写总结）</li>
-</ul>
-<h2 id="Reflective"><a href="#Reflective" class="headerlink" title="Reflective"></a>Reflective</h2><p>正常</p>
-<h2 id="Interpretive"><a href="#Interpretive" class="headerlink" title="Interpretive"></a>Interpretive</h2><ul>
-<li>前端薄弱，经常拆东墙补西墙</li>
-<li>Chrome插件 <strong>CSSViewer</strong>，可以即时看到网站的布局，非常好用</li>
-</ul>
-<h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><ul>
-<li>今天还行</li>
-<li>明天把周一的直播补上，继续魔改</li>
-</ul>
+            <p>筛选出分类后的产品，这里面分类是另建了一个model，和product关联起来的</p>
+<p>导向该分类的代码用这个</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;% Category.all.each do |category| %&gt;</div><div class="line">  &lt;li&gt;</div><div class="line">    &lt;%= link_to(category.name, products_path(c: category)) %&gt;</div><div class="line">  &lt;/li&gt;</div><div class="line">&lt;% end %&gt;</div></pre></td></tr></table></figure>
+<p>把<code>@category</code>这个key给c</p>
+<p>观察一下url</p>
+<p><code>http://localhost:3000/products?c=1</code>  1就是category_id</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span></span></div><div class="line">  <span class="keyword">if</span> params[<span class="symbol">:c</span>].blank?</div><div class="line">    @products = Product.published</div><div class="line">  <span class="keyword">else</span></div><div class="line">    @category = Category.find_by(params[<span class="symbol">:c</span>]) <span class="comment">#找出是哪个category</span></div><div class="line">    @products = Product.published.where(<span class="symbol">:category</span> =&gt; @category) <span class="comment">#找出这个category下的Job</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>用<code>Category.find_by(params[:c])</code>捞出key的信息（当前的category_id），赋值给<code>@category</code></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">@products = Product.published.where(<span class="symbol">:category</span> =&gt; @category)</div></pre></td></tr></table></figure>
+<p>最后就是捞出<code>category</code>(model)是<code>@category</code>(当前的category) 的Product</p>
+<p>设个断点看一下可以方便理解</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span></span></div><div class="line">  <span class="keyword">if</span> params[<span class="symbol">:c</span>].blank?</div><div class="line">    @products = Product.published</div><div class="line">  <span class="keyword">else</span></div><div class="line">    @category = Category.find_by(params[<span class="symbol">:c</span>]) <span class="comment">#找出是哪个category</span></div><div class="line"> +  binding.pry</div><div class="line">    @products = Product.published.where(<span class="symbol">:category</span> =&gt; @category) <span class="comment">#找出这个category下的Job</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>点进某个category，比如“会员卡”</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1fg71pqjz0qj31b20oyjx4.jpg" alt=""></p>
+<p>这时候，<code>params[:c]</code>就是<em>1</em> （会员卡的category_id），<code>find_by</code>找出所有Category中id是1的category</p>
+<p>赋值后，<code>@category</code>就是当前的category了</p>
+<p>对当前分类产品的进行排序</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;li&gt;&lt;%= link_to(<span class="string">"价格从低到高"</span>, products_path(<span class="symbol">c:</span> @category, <span class="symbol">:order</span> =&gt; <span class="string">"价格从低到高"</span>)) %&gt;&lt;<span class="regexp">/li&gt;</span></div></pre></td></tr></table></figure>
+<p>可以自行修改</p>
+<p>观察一下Url</p>
+<p><code>http://localhost:3000/products?c=1&amp;order=价格从高到低</code></p>
+<p>说得还不够清晰，先当做一次整理，以后想得更明白了再修改</p>
 
           
         
@@ -477,6 +486,130 @@
 <p>用seed档在Heroku上建立商品老是出错，还没有找到解决办法.<br><code>CarrierWave::UploadError: Upload failed, status code: 0, response: {}</code></p>
 <p>还有一网络的大坑，导致直播很难看，打算周末Meetup时候看</p>
 <h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><p>还可以</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/02/2017-06-02-1910714/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/06/02/2017-06-02-1910714/" itemprop="url">ORID 5.31</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-02T11:03:00+08:00">
+                2017-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><ul>
+<li>修改了landingpage</li>
+<li>分类后排序（还没写总结）</li>
+</ul>
+<h2 id="Reflective"><a href="#Reflective" class="headerlink" title="Reflective"></a>Reflective</h2><p>正常</p>
+<h2 id="Interpretive"><a href="#Interpretive" class="headerlink" title="Interpretive"></a>Interpretive</h2><ul>
+<li>前端薄弱，经常拆东墙补西墙</li>
+<li>Chrome插件 <strong>CSSViewer</strong>，可以即时看到网站的布局，非常好用</li>
+</ul>
+<h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><ul>
+<li>今天还行</li>
+<li>明天把周一的直播补上，继续魔改</li>
+</ul>
 
           
         
@@ -1418,129 +1551,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/05/23/2017-05-23-orid-522-on-store-contest/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/05/23/2017-05-23-orid-522-on-store-contest/" itemprop="url">ORID 5.22 关于商店大赛</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-23T15:14:00+08:00">
-                2017-05-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><ul>
-<li>魔改</li>
-</ul>
-<h2 id="Reflective"><a href="#Reflective" class="headerlink" title="Reflective"></a>Reflective</h2><p>魔改十分不顺畅，焦虑。</p>
-<h2 id="Interpretive"><a href="#Interpretive" class="headerlink" title="Interpretive"></a>Interpretive</h2><p>这两天完全被上线的作品震撼到，自己实作的过程中困难不断，感觉根本无法做出他们那样的作品，只能再次提醒自己下面几点</p>
-<ul>
-<li>不要关注牛逼的作品来打击自己</li>
-<li>关注自己的成长</li>
-<li>时间还算充裕</li>
-</ul>
-<p>但焦虑还是无可避免的，因为这次比赛同学们的整体水平都大幅提升，不由得就感觉自己落后很多。<br>发现了好看的作品的布局、选图、色调都非常协调统一，太考验设计审美了，对我来说是个大考虑啊…</p>
-<h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><p>接下来的时间来，尽量做出一个令自己满意的作品</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1590,7 +1600,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">105</span>
+                <span class="site-state-item-count">106</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
