@@ -276,6 +276,119 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/09/2017-03-09-on-the-join-and-quit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/09/2017-03-09-on-the-join-and-quit/" itemprop="url">关于join和quit</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-09T13:37:00+08:00">
+                2017-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在groups<em>controller.rb里关于join和quit的代码是这样的<br>![屏幕快照 2017-03-09 下午9.39.53.png](<a href="http://user-image.logdown.io/user/24669/blog/23678/post/1526931/Ei0R0fATgCnOsAzi2vCI" target="_blank" rel="external">http://user-image.logdown.io/user/24669/blog/23678/post/1526931/Ei0R0fATgCnOsAzi2vCI</a></em>%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%889.39.53.png)<br>在view页面，show.html.erb是这样的<br><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526931/ynAmXDonSpuZZJaBx9dw_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%889.40.05.png" alt="屏幕快照 2017-03-09 下午9.40.05.png"><br>我注意到，在show里，当不是群组成员时，quit按钮是不显示的，同样的，是群组成员时，join按钮是不显示的，那么join和quit的代码else的部分是不是没有必要呢？<br>但是当我们同时打开两个页面时，在第一个页面join一个群组，紧接着在第二个页面再次join这个群组，就会跳出了else部分的警告<br><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526931/2NqhWVYiSAinCQpyoMcB_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%889.43.57.png" alt="屏幕快照 2017-03-09 下午9.43.57.png"><br>同理执行quit，也会跳出<br><img src="http://user-image.logdown.io/user/24669/blog/23678/post/1526931/h8IYoEdTcOnNa1Gp5P37_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-03-09%20%E4%B8%8B%E5%8D%889.43.51.png" alt="屏幕快照 2017-03-09 下午9.43.51.png"></p>
+<p>这就是当你成功执行了join和quit之后，另外一个页面仍然是停留在原来的页面的，这个else就等于做了一个双保险，把重复的join和else拦下来</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/09/2017-03-09-1526324/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1027,7 +1140,7 @@ collection =&gt; @groups写成了collection =&gt; @group 少了一个s
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">106</span>
+                <span class="site-state-item-count">107</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

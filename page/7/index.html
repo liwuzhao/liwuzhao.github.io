@@ -276,6 +276,125 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/13/2017-04-13-establishment-of-model-solutions-to-write-wrong-letters-when/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/13/2017-04-13-establishment-of-model-solutions-to-write-wrong-letters-when/" itemprop="url">建立model时写错字母的解决方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T00:55:00+08:00">
+                2017-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>昨天在做的时候遇到了这个问题，只能自己一个一个的全部改回来，非常麻烦，今天看到论坛上有人<a href="https://forum.qzy.camp/t/model/1199" target="_blank" rel="external">分享</a>了解决方法，复制到自己的logdown上，以便以后出错时查阅。</p>
+<p>#解决方案一（只执行了一步rake db：migrate）<br>第一步：<br>前往修改db/xxxx_create_groups.rb修改错误的输入，然后保存。</p>
+<p>第二步：<br>在终端输入<br>rake db:rollback （这条命令的意思是：将数据库后退一步）</p>
+<p>第三部：<br>rake db:migrate (重新将数据库跑起来，这时候你的title已经被修改为正确的了)</p>
+<p>#解决方案二（如何你执行了很多命令）<br>第一步：<br>新建一个修改的db<br>rails g migration renamecolumn (其中“renamecolumn”可以自己更换为其他名称)</p>
+<p>第二步：<br>修改db/xxxxx.renamecolumn.rb</p>
+<p>class Renamecolumn &lt; ActiveRecord::Migration[5.0]<br>def change<br>rename_column:post, :titlr, :title<br>end<br>end</p>
+<p>第三步：<br>rake db:migrate</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/12/2017-04-12-orid-orid/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1369,135 +1488,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/08/2017-04-08-47this-weeks-learning-experience-47/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/08/2017-04-08-47this-weeks-learning-experience-47/" itemprop="url"><4.7> 本周学习心得</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-08T01:57:00+08:00">
-                2017-04-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><ul>
-<li>Xdite老师的开课直播</li>
-<li>项目拆解</li>
-<li>开始Job-listing的实作</li>
-</ul>
-<h2 id="Reflective"><a href="#Reflective" class="headerlink" title="Reflective"></a>Reflective</h2><ul>
-<li>有新课程做还是挺开心的，也没遇到什么bug</li>
-</ul>
-<p>##Interpretive</p>
-<ul>
-<li>项目拆解十分十分有效，可以算是本周学习到的最棒的概念，把整个项目拆成小块，也是Computational Thinking的一部分。找到项目中有的角色，从每个角色的出发，写下要实现的功能，要做的事情就显得非常清晰明了。</li>
-<li>教材十分重要，之前不认真阅读教材是我遇到最大的坑。再写每一段代码时，都要看一下教材中的说明，理解这一段的代码的作用是什么。最后在做完后，再回头看教材，对理解整个框架和思路非常有帮助。</li>
-</ul>
-<p>##Decisional</p>
-<ul>
-<li>这一周课程算是比较轻松，完成得也不错。</li>
-<li>完成基本的课程不难，但是需要的学习的还有很多。</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1547,7 +1537,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">106</span>
+                <span class="site-state-item-count">107</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
