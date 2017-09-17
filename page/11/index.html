@@ -276,6 +276,137 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/15/2017-03-15-1587245/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/15/2017-03-15-1587245/" itemprop="url">新增about页面 & 减票</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-15T11:23:00+08:00">
+                2017-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<h2 id="新增一个about页面"><a href="#新增一个about页面" class="headerlink" title="新增一个about页面"></a><strong>新增一个about页面</strong></h2></blockquote>
+<p><strong>1.在首页添加一个About按钮</strong><br>模仿原来topics按钮的写法,导向的是about_path<br><figure class="highlight ruby"><figcaption><span>app/views/topics/index.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;%= link_to <span class="string">'About'</span>, about_path %&gt;</div></pre></td></tr></table></figure></p>
+<p><strong>2.新增一个about的页面</strong><br>模仿其他页面的写法，然后新增一个back按钮和第一步一样<br><code>touch/app/views/topics/about.html.erb</code></p>
+<figure class="highlight"><figcaption><span>app/views/topics/about.html.erb		</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;h1&gt; Welcome! &lt;/h1&gt;</div><div class="line">&lt;p&gt; Hello World! &lt;/p&gt;</div><div class="line">&lt;= link_to 'Back', topics_path %&gt;</div></pre></td></tr></table></figure>
+<p><strong>3.设置routes</strong><br>修改routes.rb<br>新增<br> <code>get &#39;about&#39; =&gt; &#39;topics#about&#39;</code><br>让about按钮指向topics下的about页面**</p>
+<blockquote>
+<p><strong>排序</strong></p>
+</blockquote>
+<p>Google找到一位同学的<a href="http://sophieqi-blog.logdown.com/posts/1356101-lesson-two-bonus-question-make" target="_blank" rel="external">logdown笔记</a>，提到了reverse的用法<br><figure class="highlight ruby"><figcaption><span>app/controllers/topics_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">def</span> <span class="title">index</span></span></div><div class="line">-   @topics = Topic.all</div><div class="line">+   @topics = Topic.all.sort_by&#123;<span class="params">|topic|</span> topic.votes.count&#125;.reverse</div><div class="line">  <span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>sort_by 就是对一组数据进行排序用的方法<br>reverse，从高到低排序</p>
+<blockquote>
+<p><strong>添加减一票功能</strong></p>
+</blockquote>
+<p>**新增一个减票的action</p>
+<figure class="highlight ruby"><figcaption><span>app/controllers/topics_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">downvote</span></span></div><div class="line">  @topic = Topic.find(params[<span class="symbol">:id</span>])</div><div class="line">  <span class="keyword">if</span> @topic.votes.count != <span class="number">0</span></div><div class="line">    @topic.votes.last.destroy</div><div class="line">    redirect_to(topics_path)</div><div class="line">  <span class="keyword">else</span></div><div class="line">    redirect_to(topics_path)</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p><strong>在routes中添加downvote</strong><br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">resources <span class="symbol">:topics</span> <span class="keyword">do</span></div><div class="line">  member <span class="keyword">do</span></div><div class="line">    post <span class="string">'upvote'</span></div><div class="line"> +  post <span class="string">'downvote'</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p><strong>新增’-1’按钮</strong><br>新增’-1’按钮<br>这个很简单，就模仿一下’+1’的写法</p>
+<figure class="highlight"><figcaption><span>app/views/topics/index.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">	 	 &lt;td&gt;&lt;%= button_to '+1', upvote_topic_path(topic), method: :post %&gt;&lt;/td&gt;</div><div class="line">+    &lt;td&gt;&lt;%= button_to '-1', downote_topic_path(topic), method: :post %&gt;&lt;/td&gt;</div></pre></td></tr></table></figure>
+<p>注意’+1’对应upvote，’-1’对应lowvote</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/14/2017-03-14-1576450/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1400,7 +1531,7 @@ collection =&gt; @groups写成了collection =&gt; @group 少了一个s
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-count">110</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
