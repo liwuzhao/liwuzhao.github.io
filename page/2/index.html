@@ -276,6 +276,142 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/21/2017-06-21-orid-620-implements-ajax/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/06/21/2017-06-21-orid-620-implements-ajax/" itemprop="url">ORID 6.20 实作Ajax</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-21T03:16:00+08:00">
+                2017-06-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##Objective</p>
+<ul>
+<li>上课</li>
+<li>实作Ajax</li>
+</ul>
+<p>##Reflective</p>
+<p>##Interpretive<br>今天做的是在购物车页面+ -数量时改变内容不会刷新页面<br>根据教程，要合理地利用<code>partial</code>，在动作发生后把整个<code>partial</code>替换</p>
+<figure class="highlight"><figcaption><span>cart/index</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;div id="change" class="col-xs-12 col-md-8 padding-bottom-2x"&gt;</div><div class="line"> &lt;%= render :partial =&gt; "cart_data" %&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
+<p><code>cart_data</code>就是关于购物车中每件商品的具体信息</p>
+<p>要做的action是<code>add_quantity</code>和<code>remove_quantity</code></p>
+<p>在原来的专案中，这两个action是在<code>cart_items_controller.rb</code>中，因为是在cart的页面刷新，所以我把它放在<code>carts_controller.rb</code> 并且要修改对应的routes</p>
+<p>两个action的link要加上<code>remote: true</code></p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;%= link_to(<span class="string">"-"</span>, remove_quantity_cart_path(cart_item.product_id), <span class="symbol">remote:</span> <span class="literal">true</span>, <span class="symbol">method:</span> <span class="symbol">:post</span>) %&gt;</div><div class="line">&lt;%= link_to(<span class="string">"+"</span>, add_quantity_cart_path(cart_item.product_id), <span class="symbol">remote:</span> <span class="literal">true</span>, <span class="symbol">method:</span> <span class="symbol">:post</span>) %&gt;</div></pre></td></tr></table></figure>
+<p>然后新建<code>add_quantity.js.erb</code></p>
+<figure class="highlight ruby"><figcaption><span>add_quantity.js.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">str = <span class="string">"&lt;%=j render :partial =&gt; "</span>cart_data<span class="string">" %&gt;"</span>;</div><div class="line">$(<span class="string">"#change"</span>).html(str);</div></pre></td></tr></table></figure>
+<p>把<code>cart_data</code>的内容替换掉</p>
+<p><code>add_quantity</code>会找到他对应的名字的js文件，只需要去掉原来的<code>redirect_to</code><br>而<code>remove_quantity</code>因为是使用同样的效果，所以使用<code>render</code><br><figure class="highlight ruby"><figcaption><span>carts_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_quantity</span></span></div><div class="line">  @cart_item = current_cart.cart_items.find_by_product_id(params[<span class="symbol">:id</span>])</div><div class="line">  <span class="keyword">if</span> @cart_item.quantity &lt; @cart_item.product.quantity</div><div class="line">       @cart_item.quantity += <span class="number">1</span></div><div class="line">       @cart_item.save</div><div class="line">      -  redirect_to carts_path</div><div class="line">  <span class="keyword">elsif</span> @cart_item.quantity == @cart_item.product.quantity</div><div class="line">      -  redirect_to carts_path, <span class="symbol">alert:</span> <span class="string">"库存不足！"</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove_quantity</span></span></div><div class="line">  @cart_item = current_cart.cart_items.find_by_product_id(params[<span class="symbol">:id</span>])</div><div class="line">  <span class="keyword">if</span> @cart_item.quantity &gt; <span class="number">0</span></div><div class="line">       @cart_item.quantity -= <span class="number">1</span></div><div class="line">       @cart_item.save</div><div class="line">    -  redirect_to carts_path</div><div class="line">    +  render <span class="string">"add_quantity"</span></div><div class="line">  <span class="keyword">elsif</span> @cart_item.quantity == <span class="number">0</span></div><div class="line">    -  redirect_to carts_path</div><div class="line">    +  render <span class="string">"add_quantity"</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>还有要变化的是总价</p>
+<figure class="highlight"><figcaption><span>cart/index.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;h4 id="change-total-price" class="amount"&gt;¥ &lt;%= render_cart_total_price(current_cart)%&gt;&lt;/h4&gt;</div></pre></td></tr></table></figure>
+<p>要给他不同的ID</p>
+<figure class="highlight ruby"><figcaption><span>add_quantity.js.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">+ $(<span class="string">"#change-total-price"</span>).html(<span class="string">"¥ &lt;%= render_cart_total_price(current_cart)%&gt;"</span>);</div></pre></td></tr></table></figure>
+<p>把总价替换一下</p>
+<p>效果如下<br><img src="http://ww3.sinaimg.cn/large/006tNc79ly1fgsngumm7qg312k0k0ju1.gif" alt=""></p>
+<p>加入购物车的action也大同小异，但是这样的话无法用<strong>flash提示的功能</strong>，目前还没找到办法</p>
+<p>##Decisional<br>还可以</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/19/2017-06-19-orid-619/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1589,126 +1725,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/07/2017-06-07-orid-67/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/07/2017-06-07-orid-67/" itemprop="url">ORID 6.7</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T17:22:00+08:00">
-                2017-06-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><ul>
-<li>上课</li>
-<li>复习《会计学原理》</li>
-<li>电商导论的期末论文</li>
-</ul>
-<h2 id="Reflective"><a href="#Reflective" class="headerlink" title="Reflective"></a>Reflective</h2><p>困困的一天…<br>很想打code做迭代，但是现实不允许呀！</p>
-<h2 id="Interpretive"><a href="#Interpretive" class="headerlink" title="Interpretive"></a>Interpretive</h2><p>在阿里云申请了一个域名www.liwuzhao.com ,以后可以把logdown的文章搬过去做个人blog</p>
-<p>很多同学发了新教程，周末有时间就学习做。</p>
-<h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><p>明天晚上应该可以做一些迭代</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1758,7 +1774,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">111</span>
+                <span class="site-state-item-count">112</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
