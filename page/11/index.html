@@ -276,6 +276,129 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/16/2017-03-16-error-recording-7my-posts-error-7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/16/2017-03-16-error-recording-7my-posts-error-7/" itemprop="url">dependent 设置销毁属主时怎么处理关联的对象</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-16T02:12:00+08:00">
+                2017-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="https://fullstack.xinshengdaxue.com/posts/88" target="_blank" rel="external">8-3 可以看到自己发表的所有文章</a> </p>
+<p>点击My posts时候出现报错</p>
+<p><img src="https://ww4.sinaimg.cn/large/006tKfTcly1fdohc4pq0wj31kw0lzwth.jpg" alt=""></p>
+<p>Google找到<a href="http://elizachen34-blog.logdown.com/posts/1185095-i-am-back-by-the-way-to-solve-a-bugnomethoderror-in-accountpostsindex" target="_blank" rel="external">原因</a>,是因为group删除了之后，对应的post没有删除</p>
+<p>首先按照教材的方法，先把post都删了</p>
+<blockquote>
+<p><code>rails console</code><br><code>Post = Post.all</code><br><code>post.delte_all</code><br><code>exit</code></p>
+</blockquote>
+<p><strong>然后修改<code>app/models/group.rb</code></strong><br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Group</span> &lt; ApplicationRecord</span></div><div class="line">    belongs_to <span class="symbol">:user</span></div><div class="line">-   has_many <span class="symbol">:posts</span></div><div class="line">+   has_many <span class="symbol">:posts</span>, <span class="symbol">:dependent</span> =&gt; <span class="symbol">:destroy</span></div><div class="line">    validates <span class="symbol">:title</span>, <span class="symbol">presence:</span> <span class="literal">true</span></div><div class="line">    has_many <span class="symbol">:group_relationships</span></div><div class="line">    has_many <span class="symbol">:members</span>, <span class="symbol">through:</span> <span class="symbol">:group_relationships</span>, <span class="symbol">source:</span> <span class="symbol">:user</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>以后就在删除group的时候，对应的post也就删除了</p>
+<p>关于dependent的所有用法<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">:dependent</span></div><div class="line"></div><div class="line">设置销毁属主时怎么处理关联的对象：</div><div class="line"></div><div class="line"><span class="symbol">:destroy</span>：也销毁所有关联的对象；</div><div class="line"></div><div class="line"><span class="symbol">:delete_all</span>：直接把所有关联的对象从数据库中删除（不执行回调）；</div><div class="line"></div><div class="line"><span class="symbol">:nullify</span>：把外键设为 NULL，不执行回调；</div><div class="line"></div><div class="line"><span class="symbol">:restrict_with_exception</span>：有关联的对象时抛出异常；</div><div class="line"></div><div class="line"><span class="symbol">:restrict_with_error</span>：有关联的对象时，向属主添加一个错误；</div></pre></td></tr></table></figure></p>
+<p>同理可以运用于JDstore中删除上架商品后把所有购物车中的商品去掉<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span> &lt; ApplicationRecord</span></div><div class="line">  has_many <span class="symbol">:cart_items</span></div><div class="line">  has_many <span class="symbol">:cart</span>, <span class="symbol">through:</span> <span class="symbol">:cart_items</span>, <span class="symbol">:dependent</span> =&gt; <span class="symbol">:destroy</span></div></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/15/2017-03-15-1587245/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1366,127 +1489,11 @@ collection =&gt; @groups写成了collection =&gt; @group 少了一个s
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/03/2017-03-03-rails-class-iii-second-practice1-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/03/2017-03-03-rails-class-iii-second-practice1-1/" itemprop="url">Rails 第三课 第二次练习 <1></a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-03T08:17:00+08:00">
-                2017-03-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&lt;学习内容&gt;<br>    <1><br>  在<a href="https://fullstack.xinshengdaxue.com/posts/56这一章节" target="_blank" rel="external">https://fullstack.xinshengdaxue.com/posts/56这一章节</a> step5为新增一个页面，</1></p>
-<p>  rails g controller welcome<br>  touch app/views/welcome/index.html.erb<br>  修改 config/routes.rb<br>  Rails.application.routes.draw do<br>    root ‘welcome#index’<br>  end</p>
-<p>  对应上第二课的加分题《新增一个about页面》，但是加分题中应该需要一个超链接link_to,和一个butoon，计划完成第二次练习后回去完成加分题。</p>
-<p>  <2><br>  第四章<br>  edit create destroy new update<br>  在controller里面写入action，再在views里添加表单，重复的表单代码可以用form</2></p>
-<p>&lt;总结&gt;<br>今天比较专心，是第二遍练习，看着教程手打代码，开始尝试理解代码，过程有些艰难，由此感觉到以后的学习中<br>一定要有耐心！<br>一定要有耐心！<br>一定要有耐心！</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span>
+    <a class="extend prev" rel="prev" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/12/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1531,7 +1538,7 @@ collection =&gt; @groups写成了collection =&gt; @group 少了一个s
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">111</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

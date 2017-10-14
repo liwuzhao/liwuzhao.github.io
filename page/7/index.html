@@ -276,6 +276,123 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/24/2017-04-24-use-params-and-where-to-grab-a-job-classification/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/24/2017-04-24-use-params-and-where-to-grab-a-job-classification/" itemprop="url">【总结】用params和where抓出工作分类</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T01:57:00+08:00">
+                2017-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>很多同学都加入对工作进行分类的这个栏位，那么如何实现查看每个分类的工作呢？<br>以我的自己专案分享一下思路</p>
+<p>##第一步<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;%= link_to <span class="string">"设计"</span>, jobs_path(<span class="symbol">:category</span> =&gt; <span class="string">"设计"</span> ) %&gt;</div></pre></td></tr></table></figure></p>
+<p>加入一个导向设计分类的按钮，括号中的内容意思是把<strong>设计</strong>这个value赋给<code>category</code>这个key</p>
+<p>##第二步<br>在controller中捞出每个分类的工作<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@jobs = Job.published</div><div class="line"><span class="keyword">if</span> params[<span class="symbol">:category</span>].present?</div><div class="line">  @category = params[<span class="symbol">:category</span>]</div><div class="line">  @jobs = @jobs.where(<span class="symbol">:category</span> =&gt; @category)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>观察url，当点击第一步的link时，地址是这样的<br><code>http://localhost:3000/jobs?category=设计</code><br>当url有category这个key时，用params把这个key对应的value，即<strong>设计</strong>赋给<code>@category</code><br>然后用<code>where</code> 把<code>category</code>栏位(注意这里代表的是栏位，是你建分类的时候的栏位名称)中带有<strong>设计</strong>这个value的的jobs捞出来</p>
+<p>上面就是大致的思路，具体的代码可以根据个人专案进行修改</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/19/2017-04-19-orid-orid/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1395,125 +1512,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/09/2017-04-09-first-meetup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/09/2017-04-09-first-meetup/" itemprop="url">第一次Meetup</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T11:50:00+08:00">
-                2017-04-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天第一次参加Meet UP，大概下午两点开始自我介绍，各个同学都分享了自己遇到的一些坑和本周最大的学习收获，发现很多同学都存在着时间不够，或者太“贪心”，同时忙于很多事情，导致学不好全栈营。再一次提醒我，虽然自己时间充裕，但还是应该专心于全栈营，保护好自己的注意力。</p>
-<p>参加Meetup最大的一个好处是可以现场让助教或者一期的同学帮忙解bug，这个过程中可以看着他们是怎么看报错信息，解bug的思路，对于以后自己解bug非常有帮助。虽然slack上有助教帮助，但是其实找助教帮忙有时候效率是比较低的，学会自己解bug，对提高效率非常非常有帮助。</p>
-<p>一帮人一起学习的感觉很不错，以后要多参加Meetup</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1558,7 +1561,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-count">111</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
