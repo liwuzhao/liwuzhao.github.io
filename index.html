@@ -508,7 +508,7 @@
       
         
           
-            <h1 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h1><p>除了merge方法外，还有一种rebase方法</p>
+            <h3 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h3><p>除了merge方法外，还有一种rebase方法</p>
 <p>假如有两支从master切出去的分支，分别为cat和dog</p>
 <p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1fki2rh1fs1j31ei0asjtw.jpg" alt=""></p>
 <p>在cat分支上运行<code>$ git rebase dog</code>后</p>
@@ -522,14 +522,15 @@
 <blockquote>
 <p>因為 Rebase 指令等於是修改歷史，不應該隨便對已經推出去給別人內容進行 rebase，因為這很容易造成其它人的困擾。</p>
 </blockquote>
-<h1 id="OIRG-HEAD"><a href="#OIRG-HEAD" class="headerlink" title="OIRG_HEAD"></a>OIRG_HEAD</h1><p>OIRG_HEAD会记录「危险操作」之前 HEAD 的位置。合并分支、Reset之类的都算是所谓「危险操作」</p>
+<h3 id="OIRG-HEAD"><a href="#OIRG-HEAD" class="headerlink" title="OIRG_HEAD"></a>OIRG_HEAD</h3><p>OIRG_HEAD会记录「危险操作」之前 HEAD 的位置。合并分支、Reset之类的都算是所谓「危险操作」</p>
 <p>可以用于恢复到操作前的状态</p>
 <p>比如上面rebase后想恢复，可以使用<code>git reset OIRD_HEAD --hard</code></p>
-<h1 id="关于分支"><a href="#关于分支" class="headerlink" title="关于分支"></a>关于分支</h1><blockquote>
+<h3 id="关于分支"><a href="#关于分支" class="headerlink" title="关于分支"></a>关于分支</h3><blockquote>
 <p>分支只是一个指向某个 Commit 的指标</p>
 </blockquote>
 <p>我们可以通过「恢复删掉的未合并的分支」来理解</p>
 <p>假设有两两支分支，分别是master和从master切出去的cat</p>
+<p>删除cat分支</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git branch -d cat</div><div class="line">error: The branch &apos;cat&apos; is not fully merged.</div><div class="line">If you are sure you want to delete it, run &apos;git branch -D cat&apos;.</div></pre></td></tr></table></figure>
 <p>因为cat未合并，所以Git会发出提醒，现在先强行删除</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git branch -D cat</div><div class="line">Deleted branch cat (was b174a5a).</div></pre></td></tr></table></figure>
