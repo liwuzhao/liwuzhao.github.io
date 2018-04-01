@@ -276,6 +276,161 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/28/2017-06-28-1981284/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/06/28/2017-06-28-1981284/" itemprop="url">命令路由 & Patch</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-28T15:51:00+08:00">
+                2017-06-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在做多步骤表单，即把表单拆成几部分去填写，用到了<strong>命名路由</strong>的写法</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">resources <span class="symbol">:events</span> <span class="keyword">do</span></div><div class="line">  resources <span class="symbol">:registrations</span> <span class="keyword">do</span></div><div class="line">    member <span class="keyword">do</span></div><div class="line">      get <span class="string">"steps/1"</span> =&gt; <span class="string">"registrations#step1"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step1</span></div><div class="line">      patch <span class="string">"steps/1/update"</span> =&gt; <span class="string">"registrations#step1_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:update_step1</span></div><div class="line">      get <span class="string">"steps/2"</span> =&gt; <span class="string">"registrations#step2"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step2</span></div><div class="line">      patch <span class="string">"steps/2/update"</span> =&gt; <span class="string">"registrations#step2_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:update_step2</span></div><div class="line">      get <span class="string">"steps/3"</span> =&gt; <span class="string">"registrations#step3"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step3</span></div><div class="line">      patch <span class="string">"steps/3/update"</span> =&gt; <span class="string">"registrations#step3_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:update_step3</span></div><div class="line">    <span class="keyword">end</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>而通常我们的写法是</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">member <span class="keyword">do</span></div><div class="line">  get <span class="symbol">:step2</span></div><div class="line">  patch <span class="symbol">:step2_update</span></div><div class="line">  ...</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>通过Google找到了相关的资料</p>
+<h2 id="命名路由"><a href="#命名路由" class="headerlink" title="命名路由"></a>命名路由</h2><p>添两段原文的解释</p>
+<p>关于命名路由</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; get &apos;/meetings&apos; =&gt; &apos;events#index&apos;, :as =&gt; &quot;meetings&quot;</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<p>&gt;</p>
+<blockquote>
+<p>其中<code>:as</code>的部份就會產生一個<code>meetings_path</code>和<code>meetings_url</code>的<em>Helpers</em>，<code>_path</code>和<code>_url</code>的差別在於前者是相對路徑，後者是絕對路徑。一般來說比較常用<code>_path</code>方法，除非像是在<em>Email</em>信件中，才必須用<code>_url</code>提供包含<em>Domain</em>的完整網址。</p>
+</blockquote>
+<p>关于路由系统</p>
+<blockquote>
+<p>不同於靜態網頁的路由是直接對應於檔案的目錄結構，一個<em>Web</em>開發框架會將路由功能納入其中，來獲得最大的彈性。也就是您可以指定任意<em>URL</em>對應到任一個<em>Controller</em>的<em>Action</em>。另一方面，我們也不在<em>Views</em>中直接寫死<em>URL</em>網址，而是透過<em>Helper</em>輔助方法根據你的路由設定來產生<em>URL</em>，這樣也可以確定該網址一定有對應的<em>Controller和Action</em>，不然就會出現<em>NoMethodError</em>找不到<em>Helper</em>方法的錯誤。</p>
+</blockquote>
+<p>回到前面说到的多步骤表单</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get <span class="string">"steps/2"</span> =&gt; <span class="string">"registrations#step2"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step2</span></div></pre></td></tr></table></figure>
+<p><strong>这句就产生了一个<code>steps/2</code>的url</strong></p>
+<p><code>http://localhost:3000/events/8/registrations/1560441c-5f32-416b-8501-503046d1f2ce/steps/2</code></p>
+<p>这个地址是可以自定义的，比如我们改成</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get <span class="string">"test/2"</span> =&gt; <span class="string">"registrations#step2"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step2</span></div></pre></td></tr></table></figure>
+<p>地址就变成了</p>
+<p><code>http://localhost:3000/events/8/registrations/2e527daa-64a4-4fc3-b555-196939085230/test/2</code></p>
+<p><strong>:as的部分就是产生对应的地址的Helpers，供我们使用</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">patch &quot;steps/2/update&quot; =&gt; &quot;registrations#step2_update&quot;, :as =&gt; :update_step2</div></pre></td></tr></table></figure>
+<p>输入<code>rake routes</code> 可以看到一个对应的路径是</p>
+<p><code>update_step2_event_registration</code></p>
+<p>如果修改成</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">patch <span class="string">"steps/2/update"</span> =&gt; <span class="string">"registrations#step2_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:test_test_step2</span></div></pre></td></tr></table></figure>
+<p>路径就变成了</p>
+<p><code>test_test_step2_event_registration</code></p>
+<p>我们调用的时候一般在后面加一个<code>_path</code></p>
+<p>比如<code>update_step2_event_registration_path</code></p>
+<p>参考<a href="https://ihower.tw/rails/routing.html" target="_blank" rel="external">Ruby实战圣经</a></p>
+<h2 id="Patch"><a href="#Patch" class="headerlink" title="Patch"></a>Patch</h2><p>上面用到的是<strong>Patch</strong></p>
+<p>简单来说</p>
+<p>Patch 是可以用于部分更新</p>
+<p>Put 是完全的替换</p>
+<p>Post 用于新增</p>
+<p>Rails4之后的update已经用了patch</p>
+<p>参考<a href="https://ihower.tw/blog/archives/6483" target="_blank" rel="external">ihower老师的blog</a>  <a href="https://ihower.tw/rails/restful.html" target="_blank" rel="external">RESTful 應用程式</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/26/2017-06-26-knowledge-of-rails102-records/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1541,173 +1696,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/06/10/2017-06-10-orid-610/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/10/2017-06-10-orid-610/" itemprop="url">ORID 6.10</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-10T17:33:00+08:00">
-                2017-06-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##Objective</p>
-<ul>
-<li>完善了&lt;会员分享&gt;</li>
-<li>&lt;健身知识&gt;板块</li>
-</ul>
-<p>##Reflective</p>
-<p>累</p>
-<p>##Interpretive</p>
-<blockquote>
-<p>套用别人写的js文档（以<a href="http://simditor.tower.im/docs/doc-usage.html" target="_blank" rel="external">编辑器</a>为例）</p>
-<ul>
-<li>在GitHub上把专案download下来</li>
-<li>把对应的js文件和css文件，丢进自己专案的vender里</li>
-<li>在js里面require对应的文件名</li>
-<li>在scss里面import对应的css文件</li>
-<li>注意看作者的说明文档，应该套用哪些文件，如何使用</li>
-</ul>
-</blockquote>
-<hr>
-<blockquote>
-<p><code>rake assets:precompile</code></p>
-<ul>
-<li>在Heroku上更新css和js代码文件，跑完指令commit，然后推GitHub和Heroku</li>
-<li>比如上面套用了一个新的js文档后就要跑这条指令</li>
-</ul>
-</blockquote>
-<hr>
-<blockquote>
-<p><code>heroku logs -t | grep &#39;error&#39;</code></p>
-<ul>
-<li>在Heroku上debug</li>
-</ul>
-</blockquote>
-<hr>
-<blockquote>
-<p>在做&lt;会员分享&gt;和&lt;健身知识&gt;板块的时候其实就对101做提取练习<br>但是因为赶时间做完上线，只是参考了别人的代码，虽然自己逻辑清晰，但是还是要自己来做提取练习</p>
-</blockquote>
-<hr>
-<blockquote>
-<p>七牛云有时传不上图，可以尝试修改时区</p>
-</blockquote>
-<hr>
-<blockquote>
-<p>大赛结束后安排</p>
-<ul>
-<li>总结（Fitness如何从无到有，做一次完整的复盘）！！</li>
-<li>复习考试</li>
-<li>提取练习！！！</li>
-<li>新课程，继续编程学习</li>
-</ul>
-</blockquote>
-<hr>
-<p>大赛终于要结束了，最近是真的累阿，作息都不太正常了</p>
-<p>##Decisional</p>
-<p>虽然很累，但是干得还是不错</p>
-<p>明天把&lt;健身知识&gt;做完，测试网站功能</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1757,7 +1745,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">114</span>
+                <span class="site-state-item-count">115</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

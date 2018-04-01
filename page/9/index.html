@@ -276,6 +276,128 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/06/2017-04-06-orid46-continue-to-implement-job-listing-orid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/06/2017-04-06-orid46-continue-to-implement-job-listing-orid/" itemprop="url"><ORID> 4.6 admin判定</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-06T16:30:00+08:00">
+                2017-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###Objective<br>今天实作了JOB的CRUD，还有admin里面的CRUD，限制admin登录等</p>
+<p>对于admin的CRUD这一部分开始没搞懂，只能跟着解说做，做完又回头看教材，去了解整个思路和框架，发现其实是比较简单的。</p>
+<p>而对于admin的限定这一部分就比较难了，遇到了一个<a href="http://wuzhao-blog.logdown.com/posts/1677451" target="_blank" rel="external">bug</a><br>主要难度是要把admin的条件判断存到数据库里，用<code>rails g migration add_is_admin_to_user</code> ,代码改成<br><figure class="highlight ruby"><figcaption><span>db/migrate/add_is_admin_to_user.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AddIsAdminToUser</span> &lt; ActiveRecord::Migration[5.0]</span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">change</span></span></div><div class="line">    add_column <span class="symbol">:users</span>, <span class="symbol">:is_admin</span>, <span class="symbol">:boolean</span>, <span class="symbol">default:</span> <span class="literal">false</span></div><div class="line">    <span class="comment"># user中增加一个is_admin栏目，设置成boolean类型，默认是false</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>剩下就在<code>model/user.rb</code>加入一个action <code>admin?</code>   <code>？</code>代表这个栏目是boolean值<br>唯有 user 的 is_admin 这个栏位是 true 时，这个人才会被判定为 admin<br><figure class="highlight ruby"><figcaption><span>model/user.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">admin?</span></span></div><div class="line">  is_admin</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>然后在controller部分用这个<code>admin?</code>去判断<br><code>!current_user.admin?</code>表示当前user的<code>is_admin</code>栏目是false，应该<code>redirect_to root_path</code><br>这里要再放在<code>application_controller.rb</code>，可以同时让更多调用这个method<br><figure class="highlight ruby"><figcaption><span>application_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">require_is_admin</span></span></div><div class="line">  <span class="keyword">if</span> !current_user.admin?</div><div class="line">    flash[<span class="symbol">:alert</span>] = <span class="string">'You are not admin'</span></div><div class="line">    redirect_to root_path</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>在<code>admin/jobs.controller.rb</code>中加入<code>before_action</code>，禁止普通使用者进行admin的所有操作<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">before_action <span class="symbol">:require_is_admin</span></div></pre></td></tr></table></figure></p>
+<p>而在views页面做判断，就直接调用<code>user.rb</code>下的<code>admin?</code>去判断就可以了<br><figure class="highlight"><figcaption><span>_navbar.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;% if current_user.admin? %&gt;</div><div class="line">	&lt;li&gt; &lt;%= link_to("Admin Panel", admin_jobs_path) %&gt; &lt;/li&gt;</div><div class="line">&lt;% end %&gt;</div></pre></td></tr></table></figure></p>
+<p>对于数据存到数据库这部分，因为Rails101的教材中也没有详细讲，所以不是很懂，在做设置薪资上下限和联系方式时，也要把薪资和联系方式这几个栏位加到数据库，然后才能input。</p>
+<p>###Reflective<br>实作新课程还是挺开心的</p>
+<p>###Interpretive<br>多看教材，理解教材<br>写ORID真的很有用，上面的部分我自己梳理一遍写下来就清晰了很多</p>
+<p>###Decisional<br>还不错，排bug的时候助教没找出来，最后自己找到了<br>明天继续实作。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/04/06/2017-04-06-1677451/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1406,133 +1528,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.com/2017/03/25/2017-03-25-orid2016325-2016325/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/25/2017-03-25-orid2016325-2016325/" itemprop="url">ORID <2016.3.25></a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-25T14:14:00+08:00">
-                2017-03-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>###Objective</p>
-<blockquote>
-<p>补上第三课的元学习课<br>学习应该[上瘾]，而不是[辛苦学习 -&gt; 苦逼练习]，关键要找到奖励、成就感，教别人是一个好办法<br>游戏 = 习惯 + 强烈的奖励<br>变动的奖励  大小变动 &amp; 时机变动</p>
-</blockquote>
-<p>###Reflective</p>
-<blockquote>
-<p>今天周末，昨天运动量稍大，有点累，早上学习状态一般，不过晚上来到图书馆后还是有找到状态</p>
-</blockquote>
-<p>###Interpretive</p>
-<blockquote>
-<p>学习把[学习]成为[习惯]，并且[上瘾]<br>最近想学习写作，xdite老师提到写作必须要把思路搞清楚，我发现自己想写作的时候脑子还是比较乱的，要努力理清思路，从ORID开始</p>
-</blockquote>
-<p>###Decisional</p>
-<blockquote>
-<p>效率一般</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1582,7 +1577,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">114</span>
+                <span class="site-state-item-count">115</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
