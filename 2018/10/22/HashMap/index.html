@@ -93,16 +93,16 @@
 
 
 
-<meta name="description" content="HashMap计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则就添加到同一hash值的元素的后面，形成链表。当链表长度超过8时转为红黑树。 key-value的键值对，用数组+链表实现 1transient Node&amp;lt;k,v&amp;gt;[] table;//存储（位桶）的数组&amp;lt;/k,v&amp;gt; 123456789101112131415161718192021222">
+<meta name="description" content="HashMap 一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则就添加到同一hash值的元素的后面，形成链表。当链表长度超过8时转为红黑树。 key-value的键值对，用数组+链表实现 1transient Node&amp;lt;k,v&amp;gt;[] table;//存储（位桶）的数组&amp;lt;/k,v&amp;gt; 12345">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Wuzhao&#39;s blog">
+<meta property="og:title" content="HashMap">
 <meta property="og:url" content="http://liwuzhao.github.io/2018/10/22/HashMap/index.html">
 <meta property="og:site_name" content="Wuzhao&#39;s blog">
-<meta property="og:description" content="HashMap计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则就添加到同一hash值的元素的后面，形成链表。当链表长度超过8时转为红黑树。 key-value的键值对，用数组+链表实现 1transient Node&amp;lt;k,v&amp;gt;[] table;//存储（位桶）的数组&amp;lt;/k,v&amp;gt; 123456789101112131415161718192021222">
-<meta property="og:updated_time" content="2018-10-22T14:46:05.311Z">
+<meta property="og:description" content="HashMap 一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则就添加到同一hash值的元素的后面，形成链表。当链表长度超过8时转为红黑树。 key-value的键值对，用数组+链表实现 1transient Node&amp;lt;k,v&amp;gt;[] table;//存储（位桶）的数组&amp;lt;/k,v&amp;gt; 12345">
+<meta property="og:updated_time" content="2018-10-22T14:52:04.711Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wuzhao&#39;s blog">
-<meta name="twitter:description" content="HashMap计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则就添加到同一hash值的元素的后面，形成链表。当链表长度超过8时转为红黑树。 key-value的键值对，用数组+链表实现 1transient Node&amp;lt;k,v&amp;gt;[] table;//存储（位桶）的数组&amp;lt;/k,v&amp;gt; 123456789101112131415161718192021222">
+<meta name="twitter:title" content="HashMap">
+<meta name="twitter:description" content="HashMap 一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则就添加到同一hash值的元素的后面，形成链表。当链表长度超过8时转为红黑树。 key-value的键值对，用数组+链表实现 1transient Node&amp;lt;k,v&amp;gt;[] table;//存储（位桶）的数组&amp;lt;/k,v&amp;gt; 12345">
 
 
 
@@ -136,7 +136,7 @@
 
 
 
-  <title> | Wuzhao's blog</title>
+  <title>HashMap | Wuzhao's blog</title>
   
 
 
@@ -292,7 +292,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">HashMap</h1>
         
 
         <div class="post-meta">
@@ -339,7 +339,10 @@
       
 
       
-        <h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><p>计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则<strong>就添加到同一hash值的元素的后面</strong>，形成链表。当链表长度超过8时转为红黑树。</p>
+        <h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><blockquote>
+<p>一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅</p>
+</blockquote>
+<p>计算key的hashcode，得出存储的数组下标，如果该数组已经有值，则<strong>就添加到同一hash值的元素的后面</strong>，形成链表。当链表长度超过8时转为红黑树。</p>
 <p>key-value的键值对，用数组+链表实现</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">transient</span> Node&lt;k,v&gt;[] table;<span class="comment">//存储（位桶）的数组&lt;/k,v&gt;</span></div></pre></td></tr></table></figure>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//Node是单向链表，它实现了Map.Entry接口</span></div><div class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">k</span>,<span class="title">v</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">k</span>,<span class="title">v</span>&gt; </span>&#123;</div><div class="line">    <span class="keyword">final</span> <span class="keyword">int</span> hash;</div><div class="line">    <span class="keyword">final</span> K key;</div><div class="line">    V value;</div><div class="line">    Node&lt;k,v&gt; next;</div><div class="line">    <span class="comment">//构造函数Hash值 键 值 下一个节点</span></div><div class="line">    Node(<span class="keyword">int</span> hash, K key, V value, Node&lt;k,v&gt; next) &#123;</div><div class="line">        <span class="keyword">this</span>.hash = hash;</div><div class="line">        <span class="keyword">this</span>.key = key;</div><div class="line">        <span class="keyword">this</span>.value = value;</div><div class="line">        <span class="keyword">this</span>.next = next;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> K <span class="title">getKey</span><span class="params">()</span>        </span>&#123; <span class="keyword">return</span> key; &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">getValue</span><span class="params">()</span>      </span>&#123; <span class="keyword">return</span> value; &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> key + = + value; &#125;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> Objects.hashCode(key) ^ Objects.hashCode(value);</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">setValue</span><span class="params">(V newValue)</span> </span>&#123;</div><div class="line">        V oldValue = value;</div><div class="line">        value = newValue;</div><div class="line">        <span class="keyword">return</span> oldValue;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//判断两个node是否相等,若key和value都相等，返回true。可以与自身比较为true</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (o == <span class="keyword">this</span>)</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">if</span> (o <span class="keyword">instanceof</span> Map.Entry) &#123;</div><div class="line">            Map.Entry&lt;!--?,?--&gt; e = (Map.Entry&lt;!--?,?--&gt;)o;</div><div class="line">            <span class="keyword">if</span> (Objects.equals(key, e.getKey()) &amp;&amp;</div><div class="line">                Objects.equals(value, e.getValue()))</div><div class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -389,8 +392,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/22/Excetion和Error/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2018/10/22/设计模式/" rel="next" title="工厂模式">
+                <i class="fa fa-chevron-left"></i> 工厂模式
               </a>
             
           </div>
@@ -398,10 +401,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/22/Iterator/" rel="prev" title="">
-                 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -473,7 +472,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">126</span>
+                <span class="site-state-item-count">117</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

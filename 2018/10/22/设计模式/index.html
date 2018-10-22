@@ -93,16 +93,16 @@
 
 
 
-<meta name="description" content="工厂模式开闭原则（对扩展开放；对修改封闭） 简单工场模式（静态工场模式）通过一个工厂类，通过传入不同参数，来创建不同的产品类。  工厂类（Creator）角色：担任这个角色的是工厂方法模式的核心，含有与应用紧密相关的商业逻辑。工厂类在客户端的直接调用下创建产品对象，它往往由一个具体Java 类实现。 抽象产品（Product）角色：担任这个角色的类是工厂方法模式所创建的对象的父类，或它们共同拥有的">
+<meta name="description" content="一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  工厂模式开闭原则（对扩展开放；对修改封闭） 简单工场模式（静态工场模式）通过一个工厂类，通过传入不同参数，来创建不同的产品类。  工厂类（Creator）角色：担任这个角色的是工厂方法模式的核心，含有与应用紧密相关的商业逻辑。工厂类在客户端的直接调用下创建产品对象，它往往由一个具体Java 类实现。 抽象产品（Product）角色：担任">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Wuzhao&#39;s blog">
+<meta property="og:title" content="工厂模式">
 <meta property="og:url" content="http://liwuzhao.github.io/2018/10/22/设计模式/index.html">
 <meta property="og:site_name" content="Wuzhao&#39;s blog">
-<meta property="og:description" content="工厂模式开闭原则（对扩展开放；对修改封闭） 简单工场模式（静态工场模式）通过一个工厂类，通过传入不同参数，来创建不同的产品类。  工厂类（Creator）角色：担任这个角色的是工厂方法模式的核心，含有与应用紧密相关的商业逻辑。工厂类在客户端的直接调用下创建产品对象，它往往由一个具体Java 类实现。 抽象产品（Product）角色：担任这个角色的类是工厂方法模式所创建的对象的父类，或它们共同拥有的">
-<meta property="og:updated_time" content="2018-10-22T14:46:05.257Z">
+<meta property="og:description" content="一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  工厂模式开闭原则（对扩展开放；对修改封闭） 简单工场模式（静态工场模式）通过一个工厂类，通过传入不同参数，来创建不同的产品类。  工厂类（Creator）角色：担任这个角色的是工厂方法模式的核心，含有与应用紧密相关的商业逻辑。工厂类在客户端的直接调用下创建产品对象，它往往由一个具体Java 类实现。 抽象产品（Product）角色：担任">
+<meta property="og:updated_time" content="2018-10-22T14:52:39.891Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wuzhao&#39;s blog">
-<meta name="twitter:description" content="工厂模式开闭原则（对扩展开放；对修改封闭） 简单工场模式（静态工场模式）通过一个工厂类，通过传入不同参数，来创建不同的产品类。  工厂类（Creator）角色：担任这个角色的是工厂方法模式的核心，含有与应用紧密相关的商业逻辑。工厂类在客户端的直接调用下创建产品对象，它往往由一个具体Java 类实现。 抽象产品（Product）角色：担任这个角色的类是工厂方法模式所创建的对象的父类，或它们共同拥有的">
+<meta name="twitter:title" content="工厂模式">
+<meta name="twitter:description" content="一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  工厂模式开闭原则（对扩展开放；对修改封闭） 简单工场模式（静态工场模式）通过一个工厂类，通过传入不同参数，来创建不同的产品类。  工厂类（Creator）角色：担任这个角色的是工厂方法模式的核心，含有与应用紧密相关的商业逻辑。工厂类在客户端的直接调用下创建产品对象，它往往由一个具体Java 类实现。 抽象产品（Product）角色：担任">
 
 
 
@@ -136,7 +136,7 @@
 
 
 
-  <title> | Wuzhao's blog</title>
+  <title>工厂模式 | Wuzhao's blog</title>
   
 
 
@@ -292,7 +292,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">工厂模式</h1>
         
 
         <div class="post-meta">
@@ -339,7 +339,10 @@
       
 
       
-        <h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><p>开闭原则（对扩展开放；对修改封闭）</p>
+        <blockquote>
+<p>一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅</p>
+</blockquote>
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><p>开闭原则（对扩展开放；对修改封闭）</p>
 <h3 id="简单工场模式（静态工场模式）"><a href="#简单工场模式（静态工场模式）" class="headerlink" title="简单工场模式（静态工场模式）"></a>简单工场模式（静态工场模式）</h3><p>通过一个工厂类，通过传入不同参数，来创建不同的产品类。</p>
 <ul>
 <li>工厂类（Creator）角色：担任这个角色的是工厂方法模式的核心，含有与应用紧密相关的商业逻辑。工厂类在客户端的直接调用下创建产品对象，它往往由一个具体Java 类实现。</li>
@@ -440,8 +443,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/22/关于RandomAccess/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2018/04/01/图片预览/" rel="next" title="图片预览">
+                <i class="fa fa-chevron-left"></i> 图片预览
               </a>
             
           </div>
@@ -450,8 +453,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/10/22/CopyOnWriteArrayList/" rel="prev" title="">
-                 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/10/22/HashMap/" rel="prev" title="HashMap">
+                HashMap <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -524,7 +527,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">126</span>
+                <span class="site-state-item-count">117</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

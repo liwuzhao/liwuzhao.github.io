@@ -276,1147 +276,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/05/2017-05-05-1793089/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/05/05/2017-05-05-1793089/" itemprop="url">提取练习— 「根据购物网站第一周」 </a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T08:37:00+08:00">
-                2017-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天实作购物网站第一周「商家用户故事」 的课程，发现其实和job-listing前面的很相像，就当做了一次提取练习。</p>
-<h3 id="基础部分"><a href="#基础部分" class="headerlink" title="基础部分"></a>基础部分</h3><blockquote>
-<p>安装bootstrap</p>
-</blockquote>
-<ul>
-<li><p><code>gem &#39;bootstrap-sass&#39;</code></p>
-</li>
-<li><p>application.css  =&gt; application.scss</p>
-</li>
-<li><p><code>application.scss</code> 中加入</p>
-</li>
-</ul>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@import <span class="string">"bootstrap-sprockets"</span>;</div><div class="line">@import <span class="string">"bootstrap"</span>;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>安装simple_form</p>
-</blockquote>
-<ul>
-<li><code>gem &#39;simple_form</code></li>
-<li><code>rails g simple_form:install —bootstrap</code></li>
-</ul>
-<blockquote>
-<p>安装devise</p>
-</blockquote>
-<ul>
-<li><code>gem &#39;devise</code></li>
-<li><code>rails g devise:install</code></li>
-<li><code>rails g devise user</code></li>
-<li><code>rails db:migrate</code></li>
-</ul>
-<h3 id="admin的CRUD"><a href="#admin的CRUD" class="headerlink" title="admin的CRUD"></a>admin的CRUD</h3><ul>
-<li><p><code>rails g controller admin::products</code></p>
-</li>
-<li><p>routes中加入</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">namespace <span class="symbol">:admin</span> <span class="keyword">do</span></div><div class="line">		resources <span class="symbol">:products</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>建立model，建立时直接添加需要的栏位</p>
-</li>
-<li><p>CRUD和对应的view</p>
-</li>
-</ul>
-<h3 id="admin-可以登录后台"><a href="#admin-可以登录后台" class="headerlink" title="admin 可以登录后台"></a>admin 可以登录后台</h3><ul>
-<li>新增一个is_admin的栏位<br><code>rails g migration add_is_admin_to_user</code></li>
-</ul>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">change</span></span></div><div class="line">	add_column <span class="symbol">:users</span>, <span class="symbol">:is_admin</span>, <span class="symbol">:boolean</span>, <span class="symbol">default:</span> <span class="literal">false</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<ul>
-<li>在user中加入admin？的判断式</li>
-</ul>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">admin?</span></span></div><div class="line">	is_admin</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<ul>
-<li><p>建立admin判断,在<code>application_controller.rb</code></p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">admin_required</span></span></div><div class="line">  <span class="keyword">if</span> !current_user.admin?</div><div class="line">  	redirect_to <span class="string">"/"</span>, <span class="symbol">alert:</span> <span class="string">"You are not admin."</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>限制只有admin才能进行admin下的CRUD<br><code>before_action :admin_required</code></p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/05/2017-05-05-1793048/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/05/05/2017-05-05-1793048/" itemprop="url"><ORID> 5.1</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T08:20:00+08:00">
-                2017-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>###Objective<br>玩了两天，今天把前两天的一些小想法基本都实现了</p>
-<ul>
-<li>优化了首页，加入了用户反馈</li>
-<li>导航栏可以直接导向首页的每个section</li>
-<li>美化后台的页面</li>
-<li>排版小屏幕的格局</li>
-</ul>
-<p>###Reflective<br>算是顺利</p>
-<p>###Interpretive<br>今天看见招聘网站课程上新了，所以把对job-listing的作品剩余的一些想法基本都做了出来，基本功能都实现了，往后可能不会再有大的更新</p>
-<p>###Decisional<br>一切顺利<br>明天回看直播，开始招聘网站的课程</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/05/2017-05-05-1793049/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/05/05/2017-05-05-1793049/" itemprop="url"><ORID> 5.4</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T08:20:00+08:00">
-                2017-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h3><p>开始招聘网站</p>
-<h3 id="Interpretive"><a href="#Interpretive" class="headerlink" title="Interpretive"></a>Interpretive</h3><p>多用手写记录笔记，多做提取练习</p>
-<h3 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h3><p>明天实作商家用户故事的部分，回看直播</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/05/2017-05-05-orid425-orid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/05/05/2017-05-05-orid425-orid/" itemprop="url"><ORID> 4.25</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T08:20:00+08:00">
-                2017-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><blockquote>
-<p>完成项目管理课程</p>
-<ul>
-<li>定义成功，其实就是你想要达到什么目标，根据目标去定制你的Must/Should/Could/Nice</li>
-<li>一定要留有测试的时间</li>
-<li>先做主线，再修补细节</li>
-</ul>
-<p>Nic老师的直播</p>
-<ul>
-<li>更清晰地了解了栅格系统</li>
-</ul>
-</blockquote>
-<h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><p>忙活了一周，把基本功能写完了，接下来要考虑美化前端以及添加更多的小功能</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/05/2017-05-05-1793041/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/05/05/2017-05-05-1793041/" itemprop="url"><4.29>ORID</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T08:19:00+08:00">
-                2017-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><p>魔改，尝试套codepen的模板</p>
-<h2 id="Reflective"><a href="#Reflective" class="headerlink" title="Reflective"></a>Reflective</h2><h2 id="Interpretive"><a href="#Interpretive" class="headerlink" title="Interpretive"></a>Interpretive</h2><p>对CSS还是不熟，照搬代码就会改来改去出问题了，只能拆东墙补西墙</p>
-<h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><p>进展不多</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/24/2017-04-24-use-params-and-where-to-grab-a-job-classification/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/24/2017-04-24-use-params-and-where-to-grab-a-job-classification/" itemprop="url">【总结】用params和where抓出工作分类</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-24T01:57:00+08:00">
-                2017-04-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>很多同学都加入对工作进行分类的这个栏位，那么如何实现查看每个分类的工作呢？<br>以我的自己专案分享一下思路</p>
-<p>##第一步<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;%= link_to <span class="string">"设计"</span>, jobs_path(<span class="symbol">:category</span> =&gt; <span class="string">"设计"</span> ) %&gt;</div></pre></td></tr></table></figure></p>
-<p>加入一个导向设计分类的按钮，括号中的内容意思是把<strong>设计</strong>这个value赋给<code>category</code>这个key</p>
-<p>##第二步<br>在controller中捞出每个分类的工作<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@jobs = Job.published</div><div class="line"><span class="keyword">if</span> params[<span class="symbol">:category</span>].present?</div><div class="line">  @category = params[<span class="symbol">:category</span>]</div><div class="line">  @jobs = @jobs.where(<span class="symbol">:category</span> =&gt; @category)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>观察url，当点击第一步的link时，地址是这样的<br><code>http://localhost:3000/jobs?category=设计</code><br>当url有category这个key时，用params把这个key对应的value，即<strong>设计</strong>赋给<code>@category</code><br>然后用<code>where</code> 把<code>category</code>栏位(注意这里代表的是栏位，是你建分类的时候的栏位名称)中带有<strong>设计</strong>这个value的的jobs捞出来</p>
-<p>上面就是大致的思路，具体的代码可以根据个人专案进行修改</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/19/2017-04-19-orid-orid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/19/2017-04-19-orid-orid/" itemprop="url"><ORID></a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-19T00:34:00+08:00">
-                2017-04-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##Objective</p>
-<ul>
-<li>魔改</li>
-</ul>
-<p>##Reflective</p>
-<ul>
-<li>循着昨天Nic老师的思路，做起来脑子不会混乱，也就不会出现太大的情绪低落</li>
-</ul>
-<p>##Interpretive</p>
-<ul>
-<li>定制devise（添加username）</li>
-<li>魔改时要做项目管理</li>
-</ul>
-<p>##Decisional</p>
-<ul>
-<li>进度还行</li>
-<li>明天争取解决几个bug，完善一下，比赛开始后争取第一时间上线</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/17/2017-04-17-oridstarting-magic-change-orid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/17/2017-04-17-oridstarting-magic-change-orid/" itemprop="url"><ORID> 开始魔改</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-17T15:42:00+08:00">
-                2017-04-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##Objective</p>
-<ul>
-<li>白天自己尝试魔改</li>
-<li>晚上听了Nic的课后再去魔改</li>
-</ul>
-<p>##Reflective</p>
-<ul>
-<li>自己魔改备受打击</li>
-<li>有了Nic的指导后顺利了很多</li>
-</ul>
-<p>##Interpretive</p>
-<ul>
-<li>学习到最好的工具就是在交流论坛上学习上一期师兄师姐们的笔记，整理得非常好，资源也很多</li>
-<li>魔改的时候思路要清楚，不能这做一下那做一下</li>
-</ul>
-<p>##Decisional<br>继续努力</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/13/2017-04-13-oridlearn-to-use-resources-orid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/04/13/2017-04-13-oridlearn-to-use-resources-orid/" itemprop="url"><ORID> 学会利用资源</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-13T14:02:00+08:00">
-                2017-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##Objective<br>今天主要装饰job-listing<br>记录几点知识</p>
-<ul>
-<li>新增栏目的时候要通过<code>rails g migration xxx</code></li>
-<li><p>限制最小工资必须小于最大工资<br><code>validates :wage_lower_bound, numericality: { less_than: :wage_upper_bound, message: &quot;薪水下限不能高于薪水上限&quot;}</code></p>
-</li>
-<li><p>添加输入提示，<code>&lt;%= f.input :contact_email, :placeholder =&gt; &quot;example@email.com&quot; %&gt;</code></p>
-</li>
-</ul>
-<p>##Reflective<br>今天学习时间多并且完整，找到切入点，学习情绪较高，很不错。</p>
-<p>##Interpretive<br>之前直接想跟着w3c做一个首页，结果困难重重<br>今天转换思路，主要通过参考别人的代码、Google等方式，从装饰其他简单的页面开始做起，不断看到自己实作的成果，面对bug也有解决的思路，收获不少，</p>
-<p><strong>重要感悟：要学会利用网上所有的资源！！！</strong></p>
-<ul>
-<li>Google，<a href="https://b.xinshengdaxue.com/C04.html" target="_blank" rel="external">正确高效的Google使用方法</a></li>
-<li>上一期同学的logdown笔记，分享</li>
-<li>w3c</li>
-<li>GitHub</li>
-</ul>
-<p>##Decisional<br>今天进展不错<br>继续努力</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/13/2017-04-13-establishment-of-model-solutions-to-write-wrong-letters-when/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1527,11 +386,1113 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/12/2017-04-12-orid-orid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/12/2017-04-12-orid-orid/" itemprop="url"><ORID></a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-12T15:47:00+08:00">
+                2017-04-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#Objective<br>接着job2做完了第二遍job-listing练习</p>
+<p>#Reflective<br>今天学习情绪不高</p>
+<p>#Interpretive<br>不能太心急，跟着xdite老师说的做，争取这周能给job-listing加个小功能</p>
+<p>#Decisional<br>今天其他事比较忙，只在早上学了几个小时<br>明天时间多，争取专注投入</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/11/2017-04-11-1696938/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/11/2017-04-11-1696938/" itemprop="url"><ORID> 4.11</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-11T23:31:00+08:00">
+                2017-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##Objective</p>
+<ul>
+<li>完成了job-listing第二周的教程</li>
+<li>尝试照着w3c去装潢一下网站</li>
+</ul>
+<p>##Reflective</p>
+<ul>
+<li>感觉前端很难</li>
+</ul>
+<p>##Interpretive</p>
+<ul>
+<li>先尝试着去做一些最小需求</li>
+<li>学习Boostrap再去尝试装潢</li>
+</ul>
+<p>##Decisional</p>
+<ul>
+<li>进度还可以，不要太心急</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/10/2017-04-10-oridjob-listing-the-second-week-begins-orid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/10/2017-04-10-oridjob-listing-the-second-week-begins-orid/" itemprop="url"><ORID> 第二周Job-listing开始</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T15:52:00+08:00">
+                2017-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><ul>
+<li>用bootstrap装饰了一下Job-listing</li>
+<li>看了一些同学的blog，学习心得</li>
+<li>xdite老师快速MVP的直播</li>
+<li>job-listing第二周新课程</li>
+</ul>
+<p>##Interpretive</p>
+<blockquote>
+<p>关于model，用<a href="https://fullstack.xinshengdaxue.com/posts/575" target="_blank" rel="external">resume</a>举例</p>
+<ul>
+<li><p><code>rails g model resume job_id:integer user_id:integer content:text</code> 是新增一个model，</p>
+<pre><code>名称为`resume`  里面有三个栏位`job_id` `user_id` `content`  `:`后面定义了这些栏位的属性
+</code></pre></li>
+<li><p>当要新增栏位到这个model时，<code>rails g migration add_attachment_to_resume</code><br>代码加上<code>add_column :resumes, :attachment, :string</code><br>就增加了一个string属性的attachment栏位到resume</p>
+</li>
+</ul>
+</blockquote>
+<hr>
+<blockquote>
+<p>关于直播</p>
+<ul>
+<li>最好的学习方法就是用起来</li>
+<li>要专注于<strong>我会什么</strong> ，不能只关注<strong>我不会什么</strong></li>
+<li>增加一个<strong>最小需求</strong>，我认为这就可以把Job-listing当做一个项目来做了，去考虑自己可以新增一些需求，是一种很有效的迁移练习</li>
+<li>User story很重要！！！在后面比赛的时候，新增需求一定要用拆idea的方法明确要实现的需求，不然脑子会乱掉</li>
+</ul>
+</blockquote>
+<p>##Decisional<br>多做笔记，继续努力</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/10/2017-04-10-orid49-understand-the-usefulness-of-a-number-of-documents-orid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/10/2017-04-10-orid49-understand-the-usefulness-of-a-number-of-documents-orid/" itemprop="url"><ORID> Meetup</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-10T15:31:00+08:00">
+                2017-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##Objective</p>
+<ul>
+<li>参加Meetup</li>
+<li>Job-listing第二遍练习</li>
+<li>Job-listing加分题</li>
+</ul>
+<p>##Interpretive<br>做加分题时对Rails的架构又有新的理解</p>
+<ul>
+<li>一般application的文件是套用到全栈中的</li>
+<li>application.scss中import了bootstrap这个gem，如果要自己定义新的class和id就在这个文件里面定义，全栈的页面都可以套用</li>
+<li>layouts中<code>&lt;%= yield %&gt;</code>就是其他views页面</li>
+<li>在layouts下新建一个文件，比如<code>admin.html.erb</code>  然后在admin的controller中套用 <code>layout &quot;admin&quot;</code>就是只在admin下使用这个layout</li>
+</ul>
+<p>今天Meetup，一位同学现场帮我排了一个<a href="http://wuzhao-blog.logdown.com/posts/1688367-keep-a-hiring-error-for-method" target="_blank" rel="external">bug</a>，对于学习如何自己排bug也有很大帮助，并且在这个bug中也进一步了解了关于route和method</p>
+<p>##Decisional<br>继续努力</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/09/2017-04-09-keep-a-hiring-error-for-method/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/09/2017-04-09-keep-a-hiring-error-for-method/" itemprop="url">报错记录 用对method</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T12:04:00+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="用对method"><a href="#用对method" class="headerlink" title="用对method"></a>用对method</h2><p><a href="https://fullstack.xinshengdaxue.com/posts/562" target="_blank" rel="external">job-listing第一周加分题</a>中，要在admin panel中实现hide和publish的按钮，在index页面添加这个按钮的代码是这样的<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;%= link_to(<span class="string">"Publish"</span>, publish_admin_job_path(job) , <span class="symbol">:method</span> =&gt; <span class="symbol">:post</span>,   <span class="symbol">:class</span> =&gt; <span class="string">"btn btn-xs btn-default"</span>) %&gt;</div></pre></td></tr></table></figure></p>
+<p>注意这里使用method是post，如果没有定义这个method，那么就会出现报错<br><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fefdsz652oj31kw0fx782.jpg" alt=""><br>报错信息写<code>No route matches[GET]</code><br>在后面也提示了信息，publish和hide应该用POST<br><img src="https://ww4.sinaimg.cn/large/006tNbRwly1fegoih0oxej3194064gmr.jpg" alt=""></p>
+<p>因为在<code>routes.rb</code>中<br><img src="https://ww4.sinaimg.cn/large/006tNbRwly1fei0c0hz8hj30ky09yq3q.jpg" alt=""></p>
+<p>送出表单，有数据更改的时候一般使用POST</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/09/2017-04-09-first-meetup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/09/2017-04-09-first-meetup/" itemprop="url">第一次Meetup</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T11:50:00+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天第一次参加Meet UP，大概下午两点开始自我介绍，各个同学都分享了自己遇到的一些坑和本周最大的学习收获，发现很多同学都存在着时间不够，或者太“贪心”，同时忙于很多事情，导致学不好全栈营。再一次提醒我，虽然自己时间充裕，但还是应该专心于全栈营，保护好自己的注意力。</p>
+<p>参加Meetup最大的一个好处是可以现场让助教或者一期的同学帮忙解bug，这个过程中可以看着他们是怎么看报错信息，解bug的思路，对于以后自己解bug非常有帮助。虽然slack上有助教帮助，但是其实找助教帮忙有时候效率是比较低的，学会自己解bug，对提高效率非常非常有帮助。</p>
+<p>一帮人一起学习的感觉很不错，以后要多参加Meetup</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/09/2017-04-09-1686668/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/09/2017-04-09-1686668/" itemprop="url"><ORID> 第一周job-listing第二遍</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-09T03:44:00+08:00">
+                2017-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###Objective<br>回看关于英语的直播<br>CSS自学作业<br>第二遍job-listing</p>
+<p>###Reflective<br>晚上第二遍job-listing的时候<code>rake db:migrate</code> 跑不了，问了助教和Google都没解决，搞得很晚，有点烦，最后重开了一个专案做，应该是当时没有及时<code>rake db:migrate</code>，搞得数据库都乱套了。</p>
+<p>###Interpretive<br>每次产生 migration 之后一定要记得运行 <code>rake db:migrate</code></p>
+<p>###Decisional<br>本来以为第二遍会很简单，结果比第一遍还难，搞得没做完<br>明天早上把第二遍补上</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/08/2017-04-08-error-recording-job-listing-2-a-second-time-could-not-be-opened/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/08/2017-04-08-error-recording-job-listing-2-a-second-time-could-not-be-opened/" itemprop="url">报错记录 job-listing-2第二遍无法打开</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-08T09:03:00+08:00">
+                2017-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>按照<a href="http://docs.qzy.camp/docs/github-job-listing-2" target="_blank" rel="external">教程</a>开始第二遍job-listing-2的时候，在本地建立新专案，clone之后，上传到GitHub，但是<code>rails s</code>后，打开却出现报错<br><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fefdsz652oj31kw0fx782.jpg" alt=""></p>
+<p>Google到一位同学的<a href="http://kuangbenzhuzhu-blog.logdown.com/posts/1317756-error-log-runtimeerror" target="_blank" rel="external">logdown笔记</a>，找到解决办法</p>
+<p>终端运行<code>cp config/database.yml.example config/database.yml</code><br>其实在<a href="https://fullstack.xinshengdaxue.com/posts/533" target="_blank" rel="external">Fork教学</a>中clone别人的专案时也跑了这一指令，意思是<strong>“把克隆下来的项目建立你自己的数据库”</strong></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/04/08/2017-04-08-css-learning-jobs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/04/08/2017-04-08-css-learning-jobs/" itemprop="url">CSS自学作业</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-08T02:49:00+08:00">
+                2017-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###margin 与 padding 的差异；</p>
+<ul>
+<li>margin是外边距，接受任何长度单位、百分数值，允许负值</li>
+<li>padding是内边距，允许长度值或百分比值，不允许负值</li>
+</ul>
+<p>###什么是 box model；<br><img src="https://ww3.sinaimg.cn/large/006tNc79gy1fef2vjn9gzj31ci0lw3zv.jpg" alt=""><br>把CSS的所有元素看做一个box，包括</p>
+<ul>
+<li>margin</li>
+<li>border</li>
+<li>padding</li>
+<li>content</li>
+</ul>
+<p>###为何要使用 em 而非 px 来定义字的大小；</p>
+<ul>
+<li>避免在 Internet Explorer 中无法调整文本的问题</li>
+<li>pixels/16=em</li>
+</ul>
+<p>###h1 {margin : 10px 0px 15px 5px;} </p>
+<ul>
+<li>margin-top :10px</li>
+<li>margin-right :0px</li>
+<li>margin-left :15px</li>
+<li>margin-bottom :5px</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1576,7 +1537,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">126</span>
+                <span class="site-state-item-count">117</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
