@@ -276,6 +276,270 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/08/18/高级登录-记住我/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/18/高级登录-记住我/" itemprop="url">高级登录—记住我</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-18T00:26:00+08:00">
+                2017-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>生成随机字符串，用作记忆令牌；</li>
+<li>把这个令牌存入浏览器的 cookie 中，并把过期时间设为未来的某个日期；</li>
+<li>在数据库中存储令牌的摘要；</li>
+<li>在浏览器的 cookie 中存储加密后的用户 ID；</li>
+<li>如果 cookie 中有用户的 ID，就用这个 ID 在数据库中查找用户，并且检查 cookie 中的记忆令牌和数据库中的哈希摘要是否匹配。</li>
+</ul>
+<blockquote>
+<p> Rails 应用经常使用 20 年后过期的 cookie，所以 Rails 提供了一个特殊的方法 permanent，用于创建这种 cookie</p>
+</blockquote>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cookies.permanent[<span class="symbol">:remember_token</span>] = remember_token</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如果没有记忆令牌，攻击者一旦知道加密的 ID，就能以这个用户的身份登录。但是按照我们目前的设计方式，就算攻击者同时获得了用户 ID 和记忆令牌，至多只能维持登录状态到真正的用户退出</p>
+</blockquote>
+<h4 id="返回指定字符串的哈希摘要"><a href="#返回指定字符串的哈希摘要" class="headerlink" title="返回指定字符串的哈希摘要"></a>返回指定字符串的哈希摘要</h4><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">self</span>.<span class="title">digest</span><span class="params">(string)</span></span></div><div class="line">  cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :</div><div class="line">    	 BCrypt::Engine.cost</div><div class="line">  BCrypt::Password.create(string, <span class="symbol">cost:</span> cost)</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<h4 id="验证令牌和摘要，如果指定的令牌和摘要匹配，返回-true"><a href="#验证令牌和摘要，如果指定的令牌和摘要匹配，返回-true" class="headerlink" title="验证令牌和摘要，如果指定的令牌和摘要匹配，返回 true"></a>验证令牌和摘要，如果指定的令牌和摘要匹配，返回 true</h4><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">authenticated?</span><span class="params">(attribute, token)</span></span></div><div class="line">  digest = send(<span class="string">"<span class="subst">#&#123;attribute&#125;</span>_digest"</span>)</div><div class="line">  <span class="keyword">return</span> <span class="literal">false</span> <span class="keyword">if</span> digest.<span class="literal">nil</span>?</div><div class="line">  BCrypt::Password.new(digest).is_password?(token)</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="comment">#使用范例</span></div><div class="line">user.authenticated?(<span class="symbol">:remember</span>, cookies[<span class="symbol">:remember_token</span>])</div></pre></td></tr></table></figure>
+<h4 id="在持久会话中记住用户"><a href="#在持久会话中记住用户" class="headerlink" title="在持久会话中记住用户"></a>在持久会话中记住用户</h4><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">remember</span><span class="params">(user)</span></span></div><div class="line">  user.remember</div><div class="line">  cookies.permanent.signed[<span class="symbol">:user_id</span>] = user.id</div><div class="line">  cookies.permanent[<span class="symbol">:remember_token</span>] = user.remember_token</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<h4 id="登录时选择是否记住"><a href="#登录时选择是否记住" class="headerlink" title="登录时选择是否记住"></a>登录时选择是否记住</h4><p>登录时选择<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;%= form_for(:session, url: login_path) do |f| %&gt;</div><div class="line">  ...</div><div class="line"></div><div class="line">  &lt;%= f.label :remember_me, class: "checkbox inline" do %&gt;</div><div class="line">      &lt;%= f.check_box :remember_me %&gt;</div><div class="line">      &lt;span&gt;Remember me on this computer&lt;/span&gt;</div><div class="line">  &lt;% end %&gt;</div><div class="line"></div><div class="line">  ...</div><div class="line">&lt;% end %&gt;</div></pre></td></tr></table></figure></p>
+<figure class="highlight ruby"><figcaption><span>app/controllers/sessions_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span></span></div><div class="line">  	...</div><div class="line">	params[<span class="symbol">:session</span>][<span class="symbol">:remember_me</span>] == <span class="string">'1'</span> ? remember(user) : forget(user)</div><div class="line"> 	...</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>如果勾选了复选框，<code>params[:session][:remember_me]</code> 的值是 ‘1’，否则是 ‘0’</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/08/18/belongs_to关联 可支持选项/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/18/belongs_to关联 可支持选项/" itemprop="url">belongs_to关联 可支持选项</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-18T00:26:00+08:00">
+                2017-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="belongs-to关联-可支持选项"><a href="#belongs-to关联-可支持选项" class="headerlink" title="belongs_to关联 可支持选项"></a>belongs_to关联 可支持选项</h3><h4 id="autosave"><a href="#autosave" class="headerlink" title="autosave"></a>autosave</h4><p>如果把 <code>:autosave</code> 选项设为 <code>true</code>，保存父对象时，会自动保存所有子对象，并把标记为析构的子对象销毁。</p>
+<h4 id="class-name"><a href="#class-name" class="headerlink" title="class_name"></a>class_name</h4><p>指定关联的模型名称</p>
+<h4 id="counter-cache"><a href="#counter-cache" class="headerlink" title="counter_cache"></a>counter_cache</h4><p>提高统计所属对象数量操作的效率</p>
+<p>如<code>@author.books.size</code> 会调用之前计算好的缓存数据，而不用对数据库进行计算</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Book</span> &lt; ApplicationRecord</span></div><div class="line">  belongs_to <span class="symbol">:author</span>, <span class="symbol">counter_cache:</span> <span class="literal">true</span></div><div class="line"><span class="keyword">end</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Author</span> &lt; ApplicationRecord</span></div><div class="line">  has_many <span class="symbol">:books</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p><code>Author</code>模型中要加入<code>books_count</code>字段</p>
+<h4 id="dependent"><a href="#dependent" class="headerlink" title="dependent"></a>dependent</h4><ul>
+<li><code>:destroy</code>：也销毁关联的对象</li>
+<li><code>:delete_all</code>：直接从数据库中删除关联的对象（不执行回调）</li>
+<li><code>:nullify</code>：把外键设为 <code>NULL</code>（不执行回调）</li>
+<li><code>:restrict_with_exception</code>：如果有关联的记录，抛出异常</li>
+<li><code>:restrict_with_error</code>：如果有关联的对象，为属主添加一个错误</li>
+</ul>
+<blockquote>
+<p>在 <code>belongs_to</code> 关联和 <code>has_many</code> 关联配对时，不应该设置这个选项，否则会导致数据库中出现无主记录。</p>
+</blockquote>
+<h4 id="foreign-key"><a href="#foreign-key" class="headerlink" title="foreign_key"></a>foreign_key</h4><p>按照约定，用来存储外键的字段名是关联名后加 <code>_id</code></p>
+<p><code>:foreign_key</code> 选项可以设置要使用的外键名</p>
+<h4 id="primary-key"><a href="#primary-key" class="headerlink" title="primary_key"></a>primary_key</h4><p>按照约定，Rails 假定使用表中的 <code>id</code> 列保存主键。使用 <code>:primary_key</code> 选项可以指定使用其他列。</p>
+<h4 id="inverse-of"><a href="#inverse-of" class="headerlink" title="inverse_of"></a>inverse_of</h4><p><code>:inverse_of</code> 选项指定 <code>belongs_to</code> 关联另一端的 <code>has_many</code> 和 <code>has_one</code> 关联名。不能和 <code>:polymorphic</code> 选项一起使用</p>
+<h4 id="polymorphic"><a href="#polymorphic" class="headerlink" title="polymorphic"></a>polymorphic</h4><p><a href="https://ruby-china.github.io/rails-guides/association_basics.html#polymorphic-associations" target="_blank" rel="external">多态关联</a></p>
+<h4 id="touch"><a href="#touch" class="headerlink" title="touch"></a>touch</h4><p>如果把 <code>:touch</code> 选项设为 <code>true</code>，保存或销毁对象时，关联对象的 <code>updated_at</code> 或 <code>updated_on</code> 字段会自动设为当前时间</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/07/05/JD-store提取练习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1353,392 +1617,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/06/16/2017-06-16-1954876/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/16/2017-06-16-1954876/" itemprop="url">Rails百宝箱第一集总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-16T15:38:00+08:00">
-                2017-06-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="修改网址id"><a href="#修改网址id" class="headerlink" title="修改网址id"></a>修改网址id</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">to_param</span></span></div><div class="line">  <span class="keyword">self</span>.id</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>在调用路由方法时，Rails 默认都会用 to_param 方法来转换 ID</p>
-<p>Rails默认的<code>to_param</code>是这样的，我们只要修改<code>self.id</code>就能修改网址的ID了</p>
-<p>比如<code>&quot;#{self.id}-#{self.name}&quot;</code></p>
-<hr>
-<p>或者给一个乱序的ID</p>
-<p>先给Event加一个字段，比如<code>friendly_id</code></p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AddFriendlyIdToEvent</span> &lt; ActiveRecord::Migration[5.0]</span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">change</span></span></div><div class="line">    add_column <span class="symbol">:events</span>, <span class="symbol">:friendly_id</span>, <span class="symbol">:string</span></div><div class="line">    add_index <span class="symbol">:events</span>, <span class="symbol">:friendly_id</span>, <span class="symbol">:unique</span> =&gt; <span class="literal">true</span></div><div class="line"></div><div class="line">    Event.find_each <span class="keyword">do</span> <span class="params">|e|</span></div><div class="line">      e.update( <span class="symbol">:friendly_id</span> =&gt; SecureRandom.uuid)</div><div class="line">    <span class="keyword">end</span></div><div class="line"></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>&gt;</p>
-<blockquote>
-<p>这里面的<code>add_index</code>意思是给<code>friendly</code>打上唯一<strong>索引</strong>，便于查找</p>
-</blockquote>
-<p>比如</p>
-<p><code>@event = Event.find_by_friendly_id!(params[:id])</code></p>
-<p>如果不加 index，那么程序内部的查找方法，是从 Event 第一条数据往下找，有索引之后，可以提高查找速度。</p>
-<p>修改下面代码</p>
-<p><code>@event = Event.find_by_friendly_id!(params[:id])</code></p>
-<figure class="highlight ruby"><figcaption><span>event.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">before_validation <span class="symbol">:generate_friendly_id</span>, <span class="symbol">:on</span> =&gt; <span class="symbol">:create</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">to_param</span></span></div><div class="line">    <span class="string">"<span class="subst">#&#123;<span class="keyword">self</span>.id&#125;</span>-<span class="subst">#&#123;<span class="keyword">self</span>.name&#125;</span>"</span></div><div class="line">    <span class="keyword">self</span>.friendly_id</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line">protected</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_friendly_id</span></span></div><div class="line">    <span class="keyword">self</span>.friendly_id <span class="params">||</span>= SecureRandom.uuid</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>这就给每个Event打上了一个乱序的ID</p>
-<p>自定义的ID的话，只要在创建event的时候自己输入friendly_id的内容就行了</p>
-<hr>
-<h2 id="表单单选UI"><a href="#表单单选UI" class="headerlink" title="表单单选UI"></a>表单单选UI</h2><p>在表单做一个单选的 UI，单选的选项是固定的，不需要额外建立 Model 来存选项。</p>
-<p>给event添加新的字段<code>status</code>  默认是<code>draft</code>  用于显示event的状态</p>
-<p><code>add_column :events, :status, :string, :default =&gt; &quot;draft&quot;</code></p>
-<figure class="highlight ruby"><figcaption><span>event.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">STATUS = [<span class="string">"draft"</span>, <span class="string">"public"</span>, <span class="string">"private"</span>]</div><div class="line">validates_inclusion_of <span class="symbol">:status</span>, <span class="symbol">:in</span> =&gt; STATUS</div></pre></td></tr></table></figure>
-<blockquote>
-<p>这里用到的验证方法是<strong>检查资料必须是只能是某些值</strong>,例如上面指status只能是STATUS这个数组里的值</p>
-</blockquote>
-<p>显示给用户的看的时候，可以用helper</p>
-<figure class="highlight ruby"><figcaption><span>app/helpers/events_helper.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">module</span> <span class="title">EventsHelper</span></span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">display_event_status</span><span class="params">(event)</span></span></div><div class="line">    <span class="keyword">case</span> event.status</div><div class="line">      <span class="keyword">when</span> <span class="string">"draft"</span></div><div class="line">        <span class="string">"草稿"</span></div><div class="line">      <span class="keyword">when</span> <span class="string">"private"</span></div><div class="line">        <span class="string">"私密"</span></div><div class="line">      <span class="keyword">when</span> <span class="string">"public"</span></div><div class="line">        <span class="string">"公开"</span></div><div class="line">    <span class="keyword">end</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>在需要的页面直接调用<code>&lt;%= display_event_status(@event) %&gt;</code>就可以了</p>
-<p>在后台修改status有三种样式</p>
-<blockquote>
-<p>下拉选单</p>
-</blockquote>
-<figure class="highlight"><figcaption><span>app/views/admin/events/_form.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div class="form-group"&gt;</div><div class="line">&lt;%= f.label :status %&gt;</div><div class="line">&lt;%= f.select :status, Event::STATUS.map&#123; |s| [t(s, :scope =&gt; "event.status"), s] &#125;, &#123;&#125;, :class =&gt; "form-control" %&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>Radio Button</p>
-</blockquote>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;% Event::STATUS.each do |status| %&gt;</div><div class="line">  &lt;label&gt;</div><div class="line">    &lt;%= f.radio_button :status, status %&gt;</div><div class="line">    &lt;%= t(status, :scope =&gt; "event.status") %&gt;</div><div class="line">  &lt;/label&gt;</div><div class="line">&lt;% end %&gt;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>Radio Button搭配Bootstrap</p>
-</blockquote>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;div class="btn-group" data-toggle="buttons"&gt;</div><div class="line">  &lt;% Event::STATUS.each do |status| %&gt;</div><div class="line">    &lt;label class="btn btn-default &lt;%= (status == f.object.status)? 'active' : '' %&gt;"&gt;</div><div class="line">      &lt;%= f.radio_button :status, status %&gt;</div><div class="line">      &lt;%= t(status, :scope =&gt; "event.status") %&gt;</div><div class="line">    &lt;/label&gt;</div><div class="line">  &lt;% end %&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
-<hr>
-<h2 id="表单单选-UI-和-Select2-Plugin"><a href="#表单单选-UI-和-Select2-Plugin" class="headerlink" title="表单单选 UI 和 Select2 Plugin"></a>表单单选 UI 和 Select2 Plugin</h2><p>例子是给event给添加category，跟之前商店大赛做的差不多，记录几点新知识</p>
-<blockquote>
-<p>用<strong>Select下拉选单</strong>选择分类</p>
-</blockquote>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div class="form-group"&gt;</div><div class="line">  &lt;%= f.label :category_id %&gt;</div><div class="line">  &lt;%= f.select :category_id, Category.all.map&#123; |c| [c.name, c.id] &#125;, &#123;&#125;, :class =&gt; "form-control" %&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
-<p>而我之前用的是这样的，暂时不清楚有什么不同</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;%= select_tag(<span class="symbol">:category_id</span>, options_for_select(@categories), <span class="symbol">:prompt</span> =&gt; <span class="string">"分类"</span>)%&gt;</div></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>try方法</strong></p>
-</blockquote>
-<p>透过 <code>try</code> 不管是不是 <code>nil</code>，都不会报错</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;h2&gt;&lt;%= @event.category.try(<span class="symbol">:name</span>) %&gt;&lt;<span class="regexp">/h2&gt;</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>使用 jQuery Select2 Plugin优化下拉选单</strong></p>
-</blockquote>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gem <span class="string">"select2-rails"</span></div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/<span class="regexp">/= require select2</span></div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">@import <span class="string">"select2"</span>;</div><div class="line">@import <span class="string">"select2-bootstrap"</span>;</div></pre></td></tr></table></figure>
-<p>在要使用的地方加入</p>
-<figure class="highlight javascript"><figcaption><span>app/views/admin/events/_form.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">  $(<span class="string">"#event_category_id"</span>).select2( &#123; <span class="attr">theme</span>: <span class="string">"bootstrap"</span>&#125; );</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
-<p>这里id是<code>event_category_id</code> 根据情况修改</p>
-<hr>
-<h2 id="多选UI"><a href="#多选UI" class="headerlink" title="多选UI"></a>多选UI</h2><p>实作例子管理员管理用户，用户分属不同的Group(可多个)</p>
-<p>Group和User之间多对多关系建立好</p>
-<p>使用checkbox多选分组</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div class="form-group"&gt;</div><div class="line">    &lt;%= f.label :group_ids %&gt;</div><div class="line">    &lt;%= f.collection_check_boxes(:group_ids, Group.all, :id, :name) %&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
-<p>这样就可以给user选上多个group</p>
-<p>可以用Select2优化选单</p>
-<p>checkbox改成</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;%= f.select <span class="symbol">:group_ids</span>, Group.all.map&#123; <span class="params">|g|</span> [g.name, g.id] &#125;, &#123;&#125;, <span class="symbol">:multiple</span> =&gt; <span class="literal">true</span>, <span class="symbol">:class</span> =&gt; <span class="string">"form-control"</span> %&gt;</div></pre></td></tr></table></figure>
-<p>同一页下方补上</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">  $(<span class="string">"#user_group_ids"</span>).select2()</div><div class="line">&lt;<span class="regexp">/script&gt;</span></div></pre></td></tr></table></figure>
-<p><code>user_group_ids</code>可以根据实际情况修改</p>
-<p>效果</p>
-<p><img src="http://ww2.sinaimg.cn/large/006tKfTcly1fgomo0zwitj31bs0no40w.jpg" alt=""></p>
-<hr>
-<h2 id="嵌套表单-1-to-1"><a href="#嵌套表单-1-to-1" class="headerlink" title="嵌套表单 1-to-1"></a>嵌套表单 1-to-1</h2><p>例子是User拥有Profile 一对一的关系</p>
-<blockquote>
-<p>一对一对应是比较特殊的情况，一般来说可以直接把<code>Profile</code>的字段合并在<code>User</code></p>
-<p>另起一个Model的主要原因是为了节省数据库查询量，拆表后可以让绝大部分操作都不需要去碰到 profiles table</p>
-<p>对 User 来说尤其重要，因为登入之后，每一次的浏览，Rails 都会去数据库捞出 User 资料设定 <code>current_user</code></p>
-</blockquote>
-<p><strong>将编辑User的表单和编辑Profile的表单合并在一起</strong></p>
-<p>编辑User的时候同时可以编辑Profile</p>
-<p>先在user中做声明，这个方法可以让更新user的资料时，同时更新profile的关联资料</p>
-<figure class="highlight ruby"><figcaption><span>app/models/user.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">accepts_nested_attributes_for <span class="symbol">:profile</span></div><div class="line">...</div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><figcaption><span>app/controllers/users_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">   <span class="function"><span class="keyword">def</span> <span class="title">edit</span></span></div><div class="line">     @user = current_user</div><div class="line">+    @user.create_profile <span class="keyword">unless</span> @user.profile</div><div class="line">   <span class="keyword">end</span></div><div class="line"></div><div class="line">   <span class="comment"># (略)</span></div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">def</span> <span class="title">user_params</span></span></div><div class="line">-    params.<span class="keyword">require</span>(<span class="symbol">:user</span>).permit(<span class="symbol">:time_zone</span>)</div><div class="line">+    params.<span class="keyword">require</span>(<span class="symbol">:user</span>).permit(<span class="symbol">:time_zone</span>, <span class="symbol">:profile_attributes</span> =&gt; [<span class="symbol">:id</span>, <span class="symbol">:legal_name</span>, <span class="symbol">:birthday</span>, <span class="symbol">:location</span>, <span class="symbol">:education</span>, <span class="symbol">:occupation</span>, <span class="symbol">:bio</span>, <span class="symbol">:specialty</span>] )</div><div class="line">   <span class="keyword">end</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>新增了 profile_attributes 数组包含要修改的 profile 属性</p>
-</blockquote>
-<p>然后把Profile的表单加在User的表单里面    </p>
-<p><strong>用fields_for使用嵌套表单</strong></p>
-<figure class="highlight"><figcaption><span>app/views/users/edit.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"> &lt;%= f.fields_for :profile do |ff| %&gt;</div><div class="line">...</div><div class="line"></div><div class="line">#这个用法可以输入日期</div><div class="line">   &lt;div class="form-group"&gt;</div><div class="line">     &lt;%= ff.label :birthday %&gt;</div><div class="line">     &lt;%= ff.date_field :birthday, :class =&gt; "form-control" %&gt;</div><div class="line">   &lt;/div&gt;</div><div class="line">   </div><div class="line">...</div><div class="line"></div><div class="line"> &lt;% end %&gt;</div></pre></td></tr></table></figure>
-<blockquote>
-<p>用这种嵌套(Nested)表单 UI 的话，我们不需要编辑 routes.rb 加上 profile 路由，也不需要 profiles_controller，因为透过 users_controller 就可以完成了。</p>
-</blockquote>
-<p><strong>显示Profile</strong></p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;&lt;%= @user.profile.birthday %&gt;&lt;<span class="regexp">/p&gt;</span></div></pre></td></tr></table></figure>
-<hr>
-<h2 id="嵌套表单-1-to-many"><a href="#嵌套表单-1-to-many" class="headerlink" title="嵌套表单 1-to-many"></a>嵌套表单 1-to-many</h2><p>情境：管理员在后台可以编辑活动有不同票种(Ticket)，一个活动会有很多个票种。</p>
-<p>把Event和Ticket和Model的关系建立好</p>
-<p>这里的嵌套表单使用有一点不同</p>
-<figure class="highlight ruby"><figcaption><span>app/models/event.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">has_many <span class="symbol">:tickets</span>, <span class="symbol">:dependent</span> =&gt; <span class="symbol">:destroy</span>, <span class="symbol">:inverse_of</span> =&gt; <span class="symbol">:event</span></div><div class="line">accepts_nested_attributes_for <span class="symbol">:tickets</span>, <span class="symbol">:allow_destroy</span> =&gt; <span class="literal">true</span>, <span class="symbol">:reject_if</span> =&gt; <span class="symbol">:all_blank</span></div></pre></td></tr></table></figure>
-<p>找到一段解释，暂时不是很懂</p>
-<blockquote>
-<p>這裡有兩個特別的參數，:allow_destroy是說我們可以在表單中多放一個_destroy核選塊來表示刪除，而:reject_if表示說在什麼條件下，就當做沒有要真的動作，例如:all_blank就表示如果資料都是空的，就不建立location資料(當然也就不會檢查location的驗證了)。這是因為雖然要顯示location表單，但是不表示使用者一定要輸入。有輸入就表示必須通過Location Model的資料驗證。</p>
-</blockquote>
-<p>修改</p>
-<figure class="highlight ruby"><figcaption><span>app/controllers/admin/events_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">   <span class="function"><span class="keyword">def</span> <span class="title">event_params</span></span></div><div class="line">-    params.<span class="keyword">require</span>(<span class="symbol">:event</span>).permit(<span class="symbol">:name</span>, <span class="symbol">:description</span>, <span class="symbol">:friendly_id</span>, <span class="symbol">:status</span>, <span class="symbol">:category_id</span>)</div><div class="line">+    params.<span class="keyword">require</span>(<span class="symbol">:event</span>).permit(<span class="symbol">:name</span>, <span class="symbol">:description</span>, <span class="symbol">:friendly_id</span>, <span class="symbol">:status</span>, <span class="symbol">:category_id</span>, <span class="symbol">:tickets_attributes</span> =&gt; [<span class="symbol">:id</span>, <span class="symbol">:name</span>, <span class="symbol">:description</span>, <span class="symbol">:price</span>, <span class="symbol">:_destroy</span>])</div><div class="line">   <span class="keyword">end</span></div></pre></td></tr></table></figure>
-<blockquote>
-<p>新增了 <code>tickets_attributes</code> 数组包含要修改的 ticket 属性，并且额外多了一个 <code>:id</code> 和 <code>:_destroy</code>是为了配合 <code>accepts_nested_attributes_for</code> 可以编辑和删除。</p>
-</blockquote>
-<p><strong>一个在UI上动态新增Ticket的JS</strong></p>
-<p>新装一支gem</p>
-<figure class="highlight ruby"><figcaption><span>Gemfile</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gem <span class="string">"nested_form_fields"</span></div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><figcaption><span>app/assets/javascripts/application.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/<span class="regexp">/= require nested_form_fields</span></div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><figcaption><span>app/controllers/admin/events_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">   <span class="function"><span class="keyword">def</span> <span class="title">new</span></span></div><div class="line">     @event = Event.new</div><div class="line">     @event.tickets.build</div><div class="line">   <span class="keyword">end</span></div><div class="line">     <span class="comment"># (略)</span></div><div class="line">   <span class="function"><span class="keyword">def</span> <span class="title">edit</span></span></div><div class="line">     @event = Event.find_by_friendly_id!(params[<span class="symbol">:id</span>])</div><div class="line">+    @event.tickets.build <span class="keyword">if</span> @event.tickets.empty?</div><div class="line">   <span class="keyword">end</span></div></pre></td></tr></table></figure>
-<figure class="highlight"><figcaption><span>app/views/admin/events/_form.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">-  &lt;%= f.fields_for :tickets do |ff| %&gt;</div><div class="line">+  &lt;%= f.nested_fields_for :tickets do |ff| %&gt;</div><div class="line">     &lt;fieldset style="border-left: 5px solid #bbb; margin-bottom: 10px;  padding: 10px;"&gt;</div><div class="line">       &lt;legend&gt;Ticket&lt;/legend&gt;</div><div class="line">       &lt;div class="form-group"&gt;</div><div class="line">         &lt;%= ff.label :name %&gt;</div><div class="line">         &lt;%= ff.text_field :name, :class =&gt; "form-control" %&gt;</div><div class="line">       &lt;/div&gt;</div><div class="line">		....</div><div class="line">     &lt;/fieldset&gt;</div><div class="line">+    &lt;%= ff.remove_nested_fields_link "移除这个票种", :class =&gt; "btn btn-danger" %&gt;</div><div class="line">   &lt;% end %&gt;</div><div class="line">+  &lt;p class="text-right"&gt;</div><div class="line">+    &lt;%= f.add_nested_fields_link :tickets, "新增票种", :class =&gt; "btn btn-default" %&gt;</div><div class="line">+  &lt;/p&gt;</div></pre></td></tr></table></figure>
-<p>按照上面照做就好</p>
-<h2 id="多语言设置"><a href="#多语言设置" class="headerlink" title="多语言设置"></a>多语言设置</h2><p>将默认语言改为中文<br><figure class="highlight ruby"><figcaption><span>config/application.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Application</span> &lt; Rails::Application</span></div><div class="line"></div><div class="line">+   config.i18n.default_locale = <span class="string">"zh-CN"</span></div><div class="line"></div><div class="line">  <span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>所谓的多国语系的功能，是指网站中的句子和单字，可以根据用户的需求进行切换。实际的作法就是准备翻译词汇档，然后将样板中本来写死的文字，置换成调用 I18n 方法。</p>
-</blockquote>
-<p>例如中英两种文档的切换</p>
-<p>新增 <code>config/locales/zh-CN.yml</code> 这个词汇 YAML 档</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="string">"zh-CN"</span>:</div><div class="line">  <span class="symbol">event_list:</span> 活动列表</div><div class="line">  <span class="symbol">admin:</span></div><div class="line">    <span class="symbol">event_list:</span> 活动列表管理</div></pre></td></tr></table></figure>
-<p>修改英文的YML档<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">  <span class="string">"en"</span>:</div><div class="line">+   <span class="symbol">event_list:</span> Event List</div><div class="line">+   <span class="symbol">admin:</span></div><div class="line">      <span class="symbol">event_list:</span> Admin Event List</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>注意 YAML 格式的缩排必须使用两个空格，Tab 是不允许的。直接复制贴上可能会有问题，请小心检查缩排。</p>
-</blockquote>
-<p>当我们使用<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;h1&gt;&lt;%= t(<span class="string">"event_list"</span>) %&gt;&lt;<span class="regexp">/h1</span></div></pre></td></tr></table></figure></p>
-<p>会根据当前的语系调出对应的YML档的内容，即中文为<strong>活动列表</strong>，英文为<strong>Event List</strong></p>
-<p>有些句子可能会需要内嵌变量，可以使用 %{variable_name} 的语法，例如：<br><figure class="highlight ruby"><figcaption><span>config/locales/zh-CN.yml</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">"zh-CN"</span>:</div><div class="line">  <span class="symbol">hello:</span> <span class="string">"亲～ %&#123;name&#125; 你好："</span></div></pre></td></tr></table></figure></p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;%= t( <span class="string">"hello"</span>, <span class="symbol">:name</span> =&gt; current_user.display_name) %&gt;</div></pre></td></tr></table></figure>
-<p><strong>两支gem</strong><br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">gem <span class="string">"rails-i18n"</span>  <span class="comment">#Rails用到的 I18n 翻译</span></div><div class="line">gem <span class="string">"devise-i18n"</span> <span class="comment">#翻译devise</span></div></pre></td></tr></table></figure></p>
-<p><strong>切换语系</strong></p>
-<figure class="highlight ruby"><figcaption><span>app/controllers/application_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">+ before_action <span class="symbol">:set_locale</span></div><div class="line">+</div><div class="line">+ <span class="function"><span class="keyword">def</span> <span class="title">set_locale</span></span></div><div class="line">+   <span class="keyword">if</span> params[<span class="symbol">:locale</span>] &amp;&amp; I18n.available_locales.<span class="keyword">include</span>?( params[<span class="symbol">:locale</span>].to_sym )</div><div class="line">+     session[<span class="symbol">:locale</span>] = params[<span class="symbol">:locale</span>]</div><div class="line">+   <span class="keyword">end</span></div><div class="line">+</div><div class="line">+   I18n.locale = session[<span class="symbol">:locale</span>] <span class="params">||</span> I18n.default_locale</div><div class="line">+ <span class="keyword">end</span></div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;%= link_to <span class="string">"中文版"</span>, <span class="symbol">:controller</span> =&gt; controller_name, <span class="symbol">:action</span> =&gt; action_name, <span class="symbol">:locale</span> =&gt; <span class="string">"zh-CN"</span> %&gt;</div><div class="line">&lt;%= link_to <span class="string">"English"</span>, <span class="symbol">:controller</span> =&gt; controller_name, <span class="symbol">:action</span> =&gt; action_name, <span class="symbol">:locale</span> =&gt; <span class="string">"en"</span> %&gt;</div></pre></td></tr></table></figure>
-<p>##配置时区<br><strong>默认北京时区</strong><br><figure class="highlight ruby"><figcaption><span>config/application.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">config.i18n.default_locale = <span class="string">"zh-CN"</span></div><div class="line">+   config.time_zone = <span class="string">"Beijing"</span></div></pre></td></tr></table></figure></p>
-<p><strong>关于时间输出格式</strong><br>strftime 格式化时间<br>例如<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;%= event.created_at.strftime(<span class="string">"%Y/%m/%d %I:%M %p"</span>) %&gt;</div><div class="line"><span class="comment">#输出为2017/04/10 05:53 PM</span></div></pre></td></tr></table></figure></p>
-<p>to_s方法<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">datetime = Time.now</div><div class="line"></div><div class="line">datetime.to_s(<span class="symbol">:db</span>)            <span class="comment"># =&gt; "2007-12-04 00:00:00"</span></div><div class="line">datetime.to_s(<span class="symbol">:number</span>)        <span class="comment"># =&gt; "20071204000000"</span></div><div class="line">datetime.to_s(<span class="symbol">:short</span>)         <span class="comment"># =&gt; "04 Dec 00:00"</span></div><div class="line">datetime.to_s(<span class="symbol">:long</span>)          <span class="comment"># =&gt; "December 04, 2007 00:00"</span></div><div class="line">datetime.to_s(<span class="symbol">:long_ordinal</span>)  <span class="comment"># =&gt; "December 4th, 2007 00:00"</span></div><div class="line">datetime.to_s(<span class="symbol">:rfc822</span>)        <span class="comment"># =&gt; "Tue, 04 Dec 2007 00:00:00 +0000"</span></div><div class="line">datetime.to_s(<span class="symbol">:iso8601</span>)       <span class="comment"># =&gt; "2007-12-04T00:00:00+00:00"</span></div></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/06/14/2017-06-14-orid-614/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/14/2017-06-14-orid-614/" itemprop="url">ORID 6.14</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-14T16:04:00+08:00">
-                2017-06-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>##Objective</p>
-<ul>
-<li>上课</li>
-<li>复盘总结</li>
-<li>百宝箱课程-自定义网址ID</li>
-</ul>
-<p>##Reflective</p>
-<p>正常</p>
-<p>##Interpretive<br>给event加一个网址id的栏位<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AddFriendlyIdToEvent</span> &lt; ActiveRecord::Migration[5.0]</span></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">change</span></span></div><div class="line">    add_column <span class="symbol">:events</span>, <span class="symbol">:friendly_id</span>, <span class="symbol">:string</span></div><div class="line">    add_index <span class="symbol">:events</span>, <span class="symbol">:friendly_id</span>, <span class="symbol">:unique</span> =&gt; <span class="literal">true</span></div><div class="line"></div><div class="line">    Event.find_each <span class="keyword">do</span> <span class="params">|e|</span></div><div class="line">      e.update( <span class="symbol">:friendly_id</span> =&gt; SecureRandom.uuid)</div><div class="line">    <span class="keyword">end</span></div><div class="line"></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>这里面的<code>add_index</code>意思是给<code>friendly</code>打上<strong>索引</strong>，便于查找，比如</p>
-<p><code>@event = Event.find_by_friendly_id!(params[:id])</code></p>
-<p>如果不加 index，那么程序内部的查找方法，是从 Event 第一条数据往下找，有索引之后，可以提高查找速度。</p>
-<p>在这支migration里面的循环是给<code>event</code>加上<code>friendly_id</code>，因为旧的event是没有这个栏位的。</p>
-<p>通常在上线网站里，要对 model 新增字段时，就会需要对已有的数据库做类似的处理，因为上线网站的数据库不能清空。</p>
-<p><code>validates_presence_of :name, :friendly_id</code></p>
-<p>也是限制栏位不能为空，不同的写法。</p>
-<p>##Decisional</p>
-<p>明天上课，继续新教程学习</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1788,7 +1666,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">117</span>
+                <span class="site-state-item-count">119</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
