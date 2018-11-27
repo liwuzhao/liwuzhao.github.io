@@ -276,6 +276,141 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2018/11/28/spring springmvc 配置使失误失效/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/28/spring springmvc 配置使失误失效/" itemprop="url">spring springmvc 配置使失误失效</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-28T00:00:00+08:00">
+                2018-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅</p>
+</blockquote>
+<p>在web-xml中</p>
+<p>先加载父容器 application-context</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;context-param&gt;</div><div class="line">  &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</div><div class="line">  &lt;param-value&gt;classpath:spring/application-config.xml&lt;/param-value&gt;</div><div class="line">&lt;/context-param&gt;</div></pre></td></tr></table></figure>
+<p>再加载子容器dispatcherServlet，里面只加载controller</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;servlet&gt;</div><div class="line">  &lt;servlet-name&gt;dispatcherServlet&lt;/servlet-name&gt;</div><div class="line">  &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;</div><div class="line">  &lt;init-param&gt;</div><div class="line">    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</div><div class="line">    &lt;param-value&gt;/WEB-INF/mvc-config.xml&lt;/param-value&gt;</div><div class="line">  &lt;/init-param&gt;</div><div class="line">  &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</div><div class="line">  &lt;async-supported&gt;true&lt;/async-supported&gt;</div><div class="line">&lt;/servlet&gt;</div></pre></td></tr></table></figure>
+<p>Spring和springmvc和作为两个独立的容器，会把扫描到的注解对象分别放到两个不同的容器中，</p>
+<p>Springmvc容器是spring容器的一部分，他们访问对象的范围如下所示：</p>
+<p>①：springmvc子容器可以访问spring父容器中的对象</p>
+<p>②：spring父容器不能访问springmvc子容器中的对象</p>
+<p>1.如果全部把注解放到spring.xml中配置：<br>当一旦采用这种方式之后，spring会将扫描的对象都会存放到spring的容器，而不会放到springmvc子容器中，当访问项目的时候，springmvc找不到处理器映射器，和其对应的Controller，进而报404错误！</p>
+<p>2.不用spring容器，把注解全部放到springmvc中扫描：<br>是可以的，在这个里面可以同时扫描Controller层、service层、dao层的注解，但是，<strong>子容器Controller进行扫描装配时装配了@Service注解的实例，而该实例理应由父容器进行初始化以保证事务的增强处理（因为事务管理器是配置在spring容器中的），所以此时得到的将是原样的Service（没有经过事务加强处理，故而没有事务处理能力</strong>。同理，springmvc中配置controller后也不能将事务配置在controller层，因为因为事务管理器是配置在spring容器中的，如果将事务配置在Controller层的话，spring容器就访问不了springmvc子容器，进而无法访问到事务对象。进而导致事务失效。</p>
+<h3 id="事务不生效"><a href="#事务不生效" class="headerlink" title="事务不生效"></a>事务不生效</h3><p>一般的做法是父容器（spring）扫描时，排除掉 controller，留给子容器加载</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;context:component-scan base-package="com"&gt;</div><div class="line">		&lt;!--声明除了@Controller之外的bean --&gt;</div><div class="line">	&lt;context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" /&gt;</div><div class="line">&lt;/context:component-scan&gt;</div></pre></td></tr></table></figure>
+<p>子容器（spring mvc）则负责扫描 controller</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;context:component-scan base-package="com"&gt;</div><div class="line">&lt;context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" /&gt;</div><div class="line">&lt;/context:component-scan&gt;</div></pre></td></tr></table></figure>
+<p>但是发现这种配置下，在service实现层的 @Transactional 事务不生效</p>
+<p>因为在 context:component-scan 时，使用了 <code>use-default-filters=&quot;true&quot;</code> （默认值为true） 会扫描 @Component 的所有子类，即包括 @Service，但是事务配置在父容器中进行装配的，所以重新扫描得到的将是原样的Service，导致事务失效。</p>
+<p>可以设置成 use-default-filters = false</p>
+<p>或者在子容器中，exclude 掉 service</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;context:exclude-filter type=<span class="string">"annotation"</span> expression=<span class="string">"org.springframework.stereotype.Service"</span> /&gt;</div></pre></td></tr></table></figure>
+<p><a href="http://www.cnblogs.com/hafiz/p/5875770.html" target="_blank" rel="external">参考</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2018/11/06/Executor框架/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1585,128 +1720,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/09/17/inject 方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/17/inject 方法/" itemprop="url">inject方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-17T10:26:00+08:00">
-                2017-09-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>inject 方法的两种用法</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">enum.inject(init_value)&#123; <span class="params">|result,element|</span> &#125;</div><div class="line">enum.inject&#123; <span class="params">|result,element|</span> &#125;</div></pre></td></tr></table></figure>
-<p>第一种，result 以init_value为初始值<br>第二种，result以element里的第一个元素为初始值</p>
-<p>例子：选出数组中的偶数</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">array1= [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>].inject([]) <span class="keyword">do</span> <span class="params">|result, element|</span>  </div><div class="line">  result &lt;&lt; element.to_s <span class="keyword">if</span> element % <span class="number">2</span> == <span class="number">0</span>  </div><div class="line">  result  </div><div class="line"><span class="keyword">end</span>  </div><div class="line">p array1</div></pre></td></tr></table></figure>
-<p>碰上的一个实际例子，取出所有的分类（category），并组成一个二维数组</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Category</span> &lt; ApplicationRecord</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">self</span>.<span class="title">grouped_data</span></span></div><div class="line">    <span class="keyword">self</span>.roots.order(<span class="string">"weight desc"</span>).inject([]) <span class="keyword">do</span> <span class="params">|result, parent|</span></div><div class="line">      row = []</div><div class="line">      row &lt;&lt; parent</div><div class="line">      row &lt;&lt; parent.children.order(<span class="string">"weight desc"</span>)</div><div class="line">      result &lt;&lt; row</div><div class="line">    <span class="keyword">end</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>首先，<code>roots</code>方法是<code>gem &#39;ancestry&#39;</code>内置的，用于取出所有的一级分类。</p>
-<p>这段代码先把<strong>每一个一级分类</strong>及其<strong>二级分类</strong>放入数组row</p>
-<p>然后row放入数组result</p>
-<p>最后result组成的就是一个二维数组</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1756,7 +1769,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">119</span>
+                <span class="site-state-item-count">120</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

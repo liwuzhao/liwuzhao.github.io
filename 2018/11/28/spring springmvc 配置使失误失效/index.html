@@ -93,16 +93,16 @@
 
 
 
-<meta name="description" content="在做多步骤表单，即把表单拆成几部分去填写，用到了命名路由的写法 123456789101112resources :events do  resources :registrations do    member do      get &quot;steps/1&quot; =&amp;gt; &quot;registrations#step1&quot;, :as =&amp;gt; :step1      patch &quot;steps/1/updat">
+<meta name="description" content="一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  在web-xml中 先加载父容器 application-context 1234&amp;lt;context-param&amp;gt;  &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;  &amp;lt;param-value&amp;gt;classpath:spring/applicati">
 <meta property="og:type" content="article">
-<meta property="og:title" content="命令路由 &amp; Patch">
-<meta property="og:url" content="http://liwuzhao.github.io/2017/06/28/2017-06-28-1981284/index.html">
+<meta property="og:title" content="spring springmvc 配置使失误失效">
+<meta property="og:url" content="http://liwuzhao.github.io/2018/11/28/spring springmvc 配置使失误失效/index.html">
 <meta property="og:site_name" content="Wuzhao&#39;s blog">
-<meta property="og:description" content="在做多步骤表单，即把表单拆成几部分去填写，用到了命名路由的写法 123456789101112resources :events do  resources :registrations do    member do      get &quot;steps/1&quot; =&amp;gt; &quot;registrations#step1&quot;, :as =&amp;gt; :step1      patch &quot;steps/1/updat">
-<meta property="og:updated_time" content="2017-07-02T00:10:04.000Z">
+<meta property="og:description" content="一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  在web-xml中 先加载父容器 application-context 1234&amp;lt;context-param&amp;gt;  &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;  &amp;lt;param-value&amp;gt;classpath:spring/applicati">
+<meta property="og:updated_time" content="2018-11-27T16:14:22.214Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="命令路由 &amp; Patch">
-<meta name="twitter:description" content="在做多步骤表单，即把表单拆成几部分去填写，用到了命名路由的写法 123456789101112resources :events do  resources :registrations do    member do      get &quot;steps/1&quot; =&amp;gt; &quot;registrations#step1&quot;, :as =&amp;gt; :step1      patch &quot;steps/1/updat">
+<meta name="twitter:title" content="spring springmvc 配置使失误失效">
+<meta name="twitter:description" content="一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅  在web-xml中 先加载父容器 application-context 1234&amp;lt;context-param&amp;gt;  &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;  &amp;lt;param-value&amp;gt;classpath:spring/applicati">
 
 
 
@@ -130,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://liwuzhao.github.io/2017/06/28/2017-06-28-1981284/"/>
+  <link rel="canonical" href="http://liwuzhao.github.io/2018/11/28/spring springmvc 配置使失误失效/"/>
 
 
 
 
 
-  <title>命令路由 & Patch | Wuzhao's blog</title>
+  <title>spring springmvc 配置使失误失效 | Wuzhao's blog</title>
   
 
 
@@ -275,7 +275,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/06/28/2017-06-28-1981284/">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2018/11/28/spring springmvc 配置使失误失效/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wuzhao">
@@ -292,7 +292,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">命令路由 & Patch</h1>
+          <h1 class="post-title" itemprop="name headline">spring springmvc 配置使失误失效</h1>
         
 
         <div class="post-meta">
@@ -304,8 +304,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-28T15:51:00+08:00">
-                2017-06-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-28T00:00:00+08:00">
+                2018-11-28
               </time>
             
 
@@ -339,50 +339,30 @@
       
 
       
-        <p>在做多步骤表单，即把表单拆成几部分去填写，用到了<strong>命名路由</strong>的写法</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">resources <span class="symbol">:events</span> <span class="keyword">do</span></div><div class="line">  resources <span class="symbol">:registrations</span> <span class="keyword">do</span></div><div class="line">    member <span class="keyword">do</span></div><div class="line">      get <span class="string">"steps/1"</span> =&gt; <span class="string">"registrations#step1"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step1</span></div><div class="line">      patch <span class="string">"steps/1/update"</span> =&gt; <span class="string">"registrations#step1_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:update_step1</span></div><div class="line">      get <span class="string">"steps/2"</span> =&gt; <span class="string">"registrations#step2"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step2</span></div><div class="line">      patch <span class="string">"steps/2/update"</span> =&gt; <span class="string">"registrations#step2_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:update_step2</span></div><div class="line">      get <span class="string">"steps/3"</span> =&gt; <span class="string">"registrations#step3"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step3</span></div><div class="line">      patch <span class="string">"steps/3/update"</span> =&gt; <span class="string">"registrations#step3_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:update_step3</span></div><div class="line">    <span class="keyword">end</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>而通常我们的写法是</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">member <span class="keyword">do</span></div><div class="line">  get <span class="symbol">:step2</span></div><div class="line">  patch <span class="symbol">:step2_update</span></div><div class="line">  ...</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>通过Google找到了相关的资料</p>
-<h2 id="命名路由"><a href="#命名路由" class="headerlink" title="命名路由"></a>命名路由</h2><p>添两段原文的解释</p>
-<p>关于命名路由</p>
-<blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; get &apos;/meetings&apos; =&gt; &apos;events#index&apos;, :as =&gt; &quot;meetings&quot;</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+        <blockquote>
+<p>一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅</p>
 </blockquote>
-<p>&gt;</p>
-<blockquote>
-<p>其中<code>:as</code>的部份就會產生一個<code>meetings_path</code>和<code>meetings_url</code>的<em>Helpers</em>，<code>_path</code>和<code>_url</code>的差別在於前者是相對路徑，後者是絕對路徑。一般來說比較常用<code>_path</code>方法，除非像是在<em>Email</em>信件中，才必須用<code>_url</code>提供包含<em>Domain</em>的完整網址。</p>
-</blockquote>
-<p>关于路由系统</p>
-<blockquote>
-<p>不同於靜態網頁的路由是直接對應於檔案的目錄結構，一個<em>Web</em>開發框架會將路由功能納入其中，來獲得最大的彈性。也就是您可以指定任意<em>URL</em>對應到任一個<em>Controller</em>的<em>Action</em>。另一方面，我們也不在<em>Views</em>中直接寫死<em>URL</em>網址，而是透過<em>Helper</em>輔助方法根據你的路由設定來產生<em>URL</em>，這樣也可以確定該網址一定有對應的<em>Controller和Action</em>，不然就會出現<em>NoMethodError</em>找不到<em>Helper</em>方法的錯誤。</p>
-</blockquote>
-<p>回到前面说到的多步骤表单</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get <span class="string">"steps/2"</span> =&gt; <span class="string">"registrations#step2"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step2</span></div></pre></td></tr></table></figure>
-<p><strong>这句就产生了一个<code>steps/2</code>的url</strong></p>
-<p><code>http://localhost:3000/events/8/registrations/1560441c-5f32-416b-8501-503046d1f2ce/steps/2</code></p>
-<p>这个地址是可以自定义的，比如我们改成</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">get <span class="string">"test/2"</span> =&gt; <span class="string">"registrations#step2"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:step2</span></div></pre></td></tr></table></figure>
-<p>地址就变成了</p>
-<p><code>http://localhost:3000/events/8/registrations/2e527daa-64a4-4fc3-b555-196939085230/test/2</code></p>
-<p><strong>:as的部分就是产生对应的地址的Helpers，供我们使用</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">patch &quot;steps/2/update&quot; =&gt; &quot;registrations#step2_update&quot;, :as =&gt; :update_step2</div></pre></td></tr></table></figure>
-<p>输入<code>rake routes</code> 可以看到一个对应的路径是</p>
-<p><code>update_step2_event_registration</code></p>
-<p>如果修改成</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">patch <span class="string">"steps/2/update"</span> =&gt; <span class="string">"registrations#step2_update"</span>, <span class="symbol">:as</span> =&gt; <span class="symbol">:test_test_step2</span></div></pre></td></tr></table></figure>
-<p>路径就变成了</p>
-<p><code>test_test_step2_event_registration</code></p>
-<p>我们调用的时候一般在后面加一个<code>_path</code></p>
-<p>比如<code>update_step2_event_registration_path</code></p>
-<p>参考<a href="https://ihower.tw/rails/routing.html" target="_blank" rel="external">Ruby实战圣经</a></p>
-<h2 id="Patch"><a href="#Patch" class="headerlink" title="Patch"></a>Patch</h2><p>上面用到的是<strong>Patch</strong></p>
-<p>简单来说</p>
-<p>Patch 是可以用于部分更新</p>
-<p>Put 是完全的替换</p>
-<p>Post 用于新增</p>
-<p>Rails4之后的update已经用了patch</p>
-<p>参考<a href="https://ihower.tw/blog/archives/6483" target="_blank" rel="external">ihower老师的blog</a>  <a href="https://ihower.tw/rails/restful.html" target="_blank" rel="external">RESTful 應用程式</a></p>
+<p>在web-xml中</p>
+<p>先加载父容器 application-context</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;context-param&gt;</div><div class="line">  &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</div><div class="line">  &lt;param-value&gt;classpath:spring/application-config.xml&lt;/param-value&gt;</div><div class="line">&lt;/context-param&gt;</div></pre></td></tr></table></figure>
+<p>再加载子容器dispatcherServlet，里面只加载controller</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;servlet&gt;</div><div class="line">  &lt;servlet-name&gt;dispatcherServlet&lt;/servlet-name&gt;</div><div class="line">  &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;</div><div class="line">  &lt;init-param&gt;</div><div class="line">    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</div><div class="line">    &lt;param-value&gt;/WEB-INF/mvc-config.xml&lt;/param-value&gt;</div><div class="line">  &lt;/init-param&gt;</div><div class="line">  &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</div><div class="line">  &lt;async-supported&gt;true&lt;/async-supported&gt;</div><div class="line">&lt;/servlet&gt;</div></pre></td></tr></table></figure>
+<p>Spring和springmvc和作为两个独立的容器，会把扫描到的注解对象分别放到两个不同的容器中，</p>
+<p>Springmvc容器是spring容器的一部分，他们访问对象的范围如下所示：</p>
+<p>①：springmvc子容器可以访问spring父容器中的对象</p>
+<p>②：spring父容器不能访问springmvc子容器中的对象</p>
+<p>1.如果全部把注解放到spring.xml中配置：<br>当一旦采用这种方式之后，spring会将扫描的对象都会存放到spring的容器，而不会放到springmvc子容器中，当访问项目的时候，springmvc找不到处理器映射器，和其对应的Controller，进而报404错误！</p>
+<p>2.不用spring容器，把注解全部放到springmvc中扫描：<br>是可以的，在这个里面可以同时扫描Controller层、service层、dao层的注解，但是，<strong>子容器Controller进行扫描装配时装配了@Service注解的实例，而该实例理应由父容器进行初始化以保证事务的增强处理（因为事务管理器是配置在spring容器中的），所以此时得到的将是原样的Service（没有经过事务加强处理，故而没有事务处理能力</strong>。同理，springmvc中配置controller后也不能将事务配置在controller层，因为因为事务管理器是配置在spring容器中的，如果将事务配置在Controller层的话，spring容器就访问不了springmvc子容器，进而无法访问到事务对象。进而导致事务失效。</p>
+<h3 id="事务不生效"><a href="#事务不生效" class="headerlink" title="事务不生效"></a>事务不生效</h3><p>一般的做法是父容器（spring）扫描时，排除掉 controller，留给子容器加载</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;context:component-scan base-package="com"&gt;</div><div class="line">		&lt;!--声明除了@Controller之外的bean --&gt;</div><div class="line">	&lt;context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" /&gt;</div><div class="line">&lt;/context:component-scan&gt;</div></pre></td></tr></table></figure>
+<p>子容器（spring mvc）则负责扫描 controller</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;context:component-scan base-package="com"&gt;</div><div class="line">&lt;context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" /&gt;</div><div class="line">&lt;/context:component-scan&gt;</div></pre></td></tr></table></figure>
+<p>但是发现这种配置下，在service实现层的 @Transactional 事务不生效</p>
+<p>因为在 context:component-scan 时，使用了 <code>use-default-filters=&quot;true&quot;</code> （默认值为true） 会扫描 @Component 的所有子类，即包括 @Service，但是事务配置在父容器中进行装配的，所以重新扫描得到的将是原样的Service，导致事务失效。</p>
+<p>可以设置成 use-default-filters = false</p>
+<p>或者在子容器中，exclude 掉 service</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;context:exclude-filter type=<span class="string">"annotation"</span> expression=<span class="string">"org.springframework.stereotype.Service"</span> /&gt;</div></pre></td></tr></table></figure>
+<p><a href="http://www.cnblogs.com/hafiz/p/5875770.html" target="_blank" rel="external">参考</a></p>
 
       
     </div>
@@ -419,8 +399,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/26/2017-06-26-knowledge-of-rails102-records/" rel="next" title="Rails102知识点记录">
-                <i class="fa fa-chevron-left"></i> Rails102知识点记录
+              <a href="/2018/11/06/Executor框架/" rel="next" title="Executor框架">
+                <i class="fa fa-chevron-left"></i> Executor框架
               </a>
             
           </div>
@@ -428,10 +408,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/07/02/job-listing提取/" rel="prev" title="Job-listing提取练习">
-                Job-listing提取练习 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -542,7 +518,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#命名路由"><span class="nav-number">1.</span> <span class="nav-text">命名路由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Patch"><span class="nav-number">2.</span> <span class="nav-text">Patch</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务不生效"><span class="nav-number">1.</span> <span class="nav-text">事务不生效</span></a></li></ol></div>
             
 
           </div>
