@@ -276,6 +276,130 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2018/12/03/MySQL一致性视图/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/03/MySQL一致性视图/" itemprop="url">MySQL一致性视图</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-03T00:00:00+08:00">
+                2018-12-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>极客时间《MySQL实战》的一道思考题，关于更新失效的一些简单笔记。</p>
+</blockquote>
+<h3 id="一致性视图"><a href="#一致性视图" class="headerlink" title="一致性视图"></a>一致性视图</h3><p>MVCC ：每次事务更新时，都会生成一个新的数组版本，把 transaction_id 赋值给这行数据，记为 row trx_id。同时，旧的数据版本要保留，并且在新的数据版本中，能够有信息可以直接拿到它。</p>
+<p><strong>可重复读</strong>下，当事务开启的时候，构造了一个数组，保存了所有<strong>启动了但还没提交</strong>的事务 ID，也就是「活跃」的事务。数组里的事务 ID 最小值为低水位，当前系统已创建的事务 ID 最大值 + 1为最高位。</p>
+<p>这个数组和高水位，组成了事务的一致性视图。</p>
+<p>当事务访问数据时，row trx_id 大于高水位，或者在活跃事务数组内的，都不可见，会通过历史记录，找到最近可见的那个 row trx_id。</p>
+<p>注意，在可重读的隔离级别下，当事务中第一个查询语句执行时，快照才会被建立。</p>
+<p>以前理解的是，事务会读到  row trx_id 比当前事务版本小的数据。假如一个 id 98的事务，更新了数据，那么row trx_id 就为98，那么在 id 99的事务中不就会读到这个数据，违反一致性了吗？看了专栏后了解了还会有一个活跃事务的存在，在 id 99的事务的一致性视图中，存在 id 98的活跃事务，所以这行数据也是不可见的。</p>
+<p>实践一下：</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNbRwgy1fxtp031x7cj31jy0hugud.jpg" alt="WeChat158e7a9ca1e2e20e065fc69e872adf74"></p>
+<p>如图，虽然事务 B 比 事务 A先开启，但事务 B 的更新对事务 A 仍然不可见。 </p>
+<p>也就是说，事务 A 开始时，A 的一致性视图的活跃事务中包含了 B，即使 B 事务的更新提交了，对 A 仍是不可见的。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2018/11/28/spring springmvc 配置使失误失效/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1576,155 +1700,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/10/14/git分支/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/14/git分支/" itemprop="url">Git分支</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-14T10:26:00+08:00">
-                2017-10-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h3><p>除了merge方法外，还有一种rebase方法</p>
-<p>假如有两支从master切出去的分支，分别为cat和dog</p>
-<p><img src="https://ws1.sinaimg.cn/large/006tKfTcgy1fki2rh1fs1j31ei0asjtw.jpg" alt=""></p>
-<p>在cat分支上运行<code>$ git rebase dog</code>后</p>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fki2s87wnyj31eq0b3dis.jpg" alt=""></p>
-<p>贴两段解释</p>
-<blockquote>
-<p>從字面上來看，「rebase」是「re」加上「base」，翻成中文大概是「重新定義分支的參考基準」的意思。</p>
-<p><code>git rebase</code>這個指令翻成白話文，大概就是「我，就是 <code>cat</code> 分支，我現在要重新定義我的參考基準，並且將使用 <code>dog</code> 分支當做我新的參考基準」的意思。</p>
-</blockquote>
-<p><img src="https://ws2.sinaimg.cn/large/006tKfTcgy1fki2uadknlj31kw0jljxw.jpg" alt=""></p>
-<blockquote>
-<p>因為 Rebase 指令等於是修改歷史，不應該隨便對已經推出去給別人內容進行 rebase，因為這很容易造成其它人的困擾。</p>
-</blockquote>
-<h3 id="OIRG-HEAD"><a href="#OIRG-HEAD" class="headerlink" title="OIRG_HEAD"></a>OIRG_HEAD</h3><p>OIRG_HEAD会记录「危险操作」之前 HEAD 的位置。合并分支、Reset之类的都算是所谓「危险操作」</p>
-<p>可以用于恢复到操作前的状态</p>
-<p>比如上面rebase后想恢复，可以使用<code>git reset OIRD_HEAD --hard</code></p>
-<h3 id="关于分支"><a href="#关于分支" class="headerlink" title="关于分支"></a>关于分支</h3><blockquote>
-<p>分支只是一个指向某个 Commit 的指标</p>
-</blockquote>
-<p>我们可以通过「恢复删掉的未合并的分支」来理解</p>
-<p>假设有两两支分支，分别是master和从master切出去的cat</p>
-<p>删除cat分支</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git branch -d cat</div><div class="line">error: The branch &apos;cat&apos; is not fully merged.</div><div class="line">If you are sure you want to delete it, run &apos;git branch -D cat&apos;.</div></pre></td></tr></table></figure>
-<p>因为cat未合并，所以Git会发出提醒，现在先强行删除</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git branch -D cat</div><div class="line">Deleted branch cat (was b174a5a).</div></pre></td></tr></table></figure>
-<p>注意删除后的信息，给出了一个<code>b174a5a</code>，这是cat分支中最近的一次commit信息，利用这个信息就可以将cat分支里的所有改动救回来</p>
-<p>因为分支只是指向commit的一个指标，<strong>删除分支不会造成在分支里的commit的消失</strong>。</p>
-<p>要merge原来的cat分支</p>
-<p><code>$ git merge b174a5a</code></p>
-<p>或者你想重新要回这个分支</p>
-<p><code>$ git checkout -b new_cat b174a5a</code></p>
-<p>参考<a href="http://gitbook.tw/" target="_blank" rel="external">http://gitbook.tw/</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1769,7 +1749,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">120</span>
+                <span class="site-state-item-count">121</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

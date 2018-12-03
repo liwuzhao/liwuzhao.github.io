@@ -276,6 +276,133 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/27/2017-05-27-summarized-in-the-product-page-by-adding-more-quantity-of-goods/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/05/27/2017-05-27-summarized-in-the-product-page-by-adding-more-quantity-of-goods/" itemprop="url">【总结】在商品页加入多个数量的商品</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-27T13:51:00+08:00">
+                2017-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在商品详情页把多个数量的商品加入购物车，这里用到的还是<strong>加入购物车</strong>这个功能，所以我们可以回顾一下<a href="http://an-lee.pro/2017/02/08/2017-02-08-how_to_design_cart/" target="_blank" rel="external">购物车的设计思路</a></p>
+<p>加入购物车的action是这样的</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_product_to_cart</span><span class="params">(product)</span></span></div><div class="line">  ci = cart_items.build</div><div class="line">  ci.product = product</div><div class="line">  ci.quantity = <span class="number">1</span></div><div class="line">  ci.save</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>我们每加入一件物品，都建了一个cart_item，里面有product和quantity，每次quantity都给了1。所以，我们只要在加入的时候，可以自己输入一个数给quantity，就能实现加入多个数量了</p>
+<p>具体做法是这样的</p>
+<p>1.修改 add_product_to_cart(product)<br><figure class="highlight ruby"><figcaption><span>app/models/cart.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_product_to_cart</span><span class="params">(product,quantity)</span></span></div><div class="line">  ci = cart_items.build</div><div class="line">  ci.product = product</div><div class="line">  ci.quantity = quantity</div><div class="line">  ci.save</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<p>除了给他product，还要给他一个quantity</p>
+<p>2.修改controller中的add_to_cart</p>
+<figure class="highlight ruby"><figcaption><span>app/controllers/products_controller.rb </span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">def</span> <span class="title">add_to_cart</span></span></div><div class="line">   @product = Product.find(params[<span class="symbol">:id</span>])</div><div class="line">+  @quantity = params[<span class="symbol">:quantity</span>].to_i</div><div class="line"></div><div class="line">   <span class="keyword">if</span> current_cart.products.<span class="keyword">include</span>?(@product)</div><div class="line">     flash[<span class="symbol">:warning</span>] = <span class="string">"你的购物车内已有此物品"</span></div><div class="line">   <span class="keyword">elsif</span> @quantity &lt;= @product.quantity <span class="comment"># 如果输入的数量小于库存</span></div><div class="line">-    current_cart.add_product_to_cart(@product)    </div><div class="line">+    current_cart.add_product_to_cart(@product, @quantity) </div><div class="line">     flash[<span class="symbol">:notice</span>] = <span class="string">"您选择的商品已加入购物车"</span></div><div class="line">   <span class="keyword">else</span></div><div class="line">     flash[<span class="symbol">:warning</span>] = <span class="string">"您选择的商品数量超过库存"</span></div><div class="line">   <span class="keyword">end</span></div><div class="line"></div><div class="line">   redirect_to product_path(@product)</div><div class="line"> <span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>3.修改views，用form去输入quantity，最后submit，代替原来的加入购物车</p>
+<figure class="highlight"><figcaption><span>app/views/products/show.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;%= form_tag add_to_cart_product_path(@product), :method =&gt; :post, :remote =&gt; true do %&gt;</div><div class="line">   &lt;div class="quantity-box"&gt;</div><div class="line">       &lt;p&gt;</div><div class="line">         &lt;span&gt;数量&lt;/span&gt;</div><div class="line">         &lt;%= link_to("-", "", id: "quantity-minus", class: "quantity-actions") %&gt;</div><div class="line">         &lt;input type="text" name="quantity" value="1" id="quantity-input" class="quantity-input"&gt;</div><div class="line">         &lt;%= link_to("+", "", id: "quantity-plus", class: "quantity-actions") %&gt;</div><div class="line">       &lt;/p&gt;</div><div class="line">   &lt;/div&gt;</div><div class="line"></div><div class="line">    &lt;button class="btn btn-lg a1" type="submit"&gt;</div><div class="line">      &lt;%= "加入购物车" %&gt;</div><div class="line">    &lt;/button&gt;</div></pre></td></tr></table></figure>
+<p>4.因为用到了+ -按钮，要加上对应的JavaScript代码<br><figure class="highlight ruby"><figcaption><span>app/assets/javascripts/application.js</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">$(document).on(<span class="string">'turbolinks:load'</span>, function() &#123;</div><div class="line">  <span class="regexp">/*增加数量*/</span></div><div class="line">  $(<span class="string">"#quantity-plus"</span>).click(function(e) &#123;</div><div class="line">    var num = parseInt($(<span class="string">"#quantity-input"</span>).val()) + <span class="number">1</span>;</div><div class="line">    $(<span class="string">"#quantity-minus"</span>).removeClass(<span class="string">"disabled"</span>);</div><div class="line">    $(<span class="string">"#quantity-input"</span>).val(num);</div><div class="line">    e.preventDefault();</div><div class="line">  &#125;);</div><div class="line"></div><div class="line">  <span class="regexp">/*减少数量*/</span></div><div class="line">  $(<span class="string">"#quantity-minus"</span>).click(function(e) &#123;</div><div class="line">    var num = parseInt($(<span class="string">"#quantity-input"</span>).val());</div><div class="line">    <span class="keyword">if</span> (num &gt; <span class="number">1</span>) &#123;</div><div class="line">      $(<span class="string">"#quantity-input"</span>).val(num -= <span class="number">1</span>);</div><div class="line">      $(<span class="string">"#quantity-plus"</span>).removeClass(<span class="string">"disabled"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (num &lt;= <span class="number">1</span>) &#123;</div><div class="line">      $(<span class="string">"#quantity-minus"</span>).addClass(<span class="string">"disabled"</span>);</div><div class="line">    &#125;</div><div class="line">    e.preventDefault();</div><div class="line">  &#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>5.上面用到的class的CSS代码，也可以根据自己需求更改<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">.quantity-box &#123;</div><div class="line"> <span class="symbol">height:</span> <span class="number">20</span>px;</div><div class="line"> margin-<span class="symbol">bottom:</span> <span class="number">25</span>px;</div><div class="line"> padding-<span class="symbol">left:</span> <span class="number">10</span>px;</div><div class="line"> padding-<span class="symbol">right:</span> <span class="number">10</span>px;</div><div class="line">  p&#123;</div><div class="line">   <span class="symbol">color:</span> <span class="comment">#666;</span></div><div class="line">   span&#123;</div><div class="line">     margin-<span class="symbol">right:</span> <span class="number">15</span>px;</div><div class="line">   &#125;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> .quantity-input &#123;</div><div class="line">   <span class="symbol">width:</span> <span class="number">50</span>px;</div><div class="line">   text-<span class="symbol">align:</span> center;</div><div class="line">   <span class="symbol">border:</span> <span class="number">1</span>px solid <span class="comment">#ccc;</span></div><div class="line">   border-<span class="symbol">radius:</span> <span class="number">2.5</span>px;</div><div class="line">   <span class="symbol">outline:</span> none;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> .quantity-<span class="symbol">input:</span>focus &#123;</div><div class="line">   <span class="symbol">border:</span> <span class="number">1</span>px solid <span class="comment">#000;</span></div><div class="line"> &#125;</div><div class="line"></div><div class="line"> .quantity-actions &#123;</div><div class="line">   <span class="symbol">padding:</span> <span class="number">1.5</span>px <span class="number">10</span>px <span class="number">1.5</span>px <span class="number">10</span>px;</div><div class="line">   <span class="symbol">border:</span> <span class="number">1</span>px solid <span class="comment">#ccc;</span></div><div class="line">   border-<span class="symbol">radius:</span> <span class="number">2.5</span>px;</div><div class="line">   <span class="symbol">color:</span> gray;</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> .quantity-<span class="symbol">actions:</span>hover &#123;</div><div class="line">   text-<span class="symbol">decoration:</span> none;</div><div class="line"> &#125;</div><div class="line"> .quantity-<span class="symbol">actions:</span>focus &#123;</div><div class="line">   text-<span class="symbol">decoration:</span> none;</div><div class="line"> &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如有错误请指出</p>
+<p>总结：主要难点在于用form去输入和JavaScript的代码</p>
+<p>参考：<a href="https://github.com/anndoko/j-and-a-select/commit/b6f368e3858fd93daa776b3dce38b85beb788080" target="_blank" rel="external">Anndo和Jimmy的代码</a> <a href="http://alexpan-blog.logdown.com/posts/1861986" target="_blank" rel="external">AlexPan’s Blog</a></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/26/2017-05-26-orid-debug-second-edition/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1412,147 +1539,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/05/17/2017-05-17-orid517-use-fragments-of-time-orid/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/05/17/2017-05-17-orid517-use-fragments-of-time-orid/" itemprop="url"><ORID> 5.17 学习利用碎片时间</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-17T15:47:00+08:00">
-                2017-05-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Objective"><a href="#Objective" class="headerlink" title="Objective"></a>Objective</h2><p>今天没有完整的时间，利用碎片时间做了一点事情</p>
-<h2 id="Reflective"><a href="#Reflective" class="headerlink" title="Reflective"></a>Reflective</h2><p>遇到问题时会焦虑，有时候甚至会把问题夸大</p>
-<h2 id="Interpretive"><a href="#Interpretive" class="headerlink" title="Interpretive"></a>Interpretive</h2><p>一般周三我是很难找到完整的一段时间的，比如晚上开始学习都已经十一点了，今天走在路上我思考了一下这种情况要怎么办，然后想出了几个利用碎片时间的办法。</p>
-<ul>
-<li><p>在slack上看看同学的提问和助教的解答，了解一下自己没有遇到过的bug，自己想想debug的思路，再看看助教是怎么解决的</p>
-</li>
-<li><p>看看同学的logdown，经常会看到一些干货分享。比如今天我看到了好几个同学都记录到自己或者队友写了完整的userstory，又提醒了自己，把自己零散记录的想法写成userstory，因为已经有记录，只用整理，花不了什么时间。还有个收获是看到有同学参考了我的分享，挺高兴的，于是跟着<a href="http://zion.logdown.com/posts/1233044-add-discussion-forums-to-logdown-disqus" target="_blank" rel="external">文志鹏师兄的分享</a>给logdown开了个评论功能。</p>
-</li>
-<li><p>在脱产群中经常有技术性问题的讨论，白天就那么看过去了，晚上回来可以认真从头看一看，有适合自己的也可以尝试一下或者记录下来</p>
-</li>
-<li><p>碎片时间里也可以想想教程、知识点笔记、对教程的复盘笔记，又或者想想自己之前想要做的一些功能的开发思路是怎么样的。突然GET到锤子的“闪念胶囊” ，真的是神器啊，好想用啊！</p>
-</li>
-<li><p>做一些用时不用那么长的事情，比如读一篇英文文章。</p>
-</li>
-<li><p>总的来说，这些都是些<strong>用时短、不太费力</strong>的功夫</p>
-</li>
-</ul>
-<p>还有两个重要领悟是</p>
-<ul>
-<li><p>学习一定要跳出舒适区，切忌做一个假装勤奋者，只挑些不用思考的事情来做</p>
-</li>
-<li><p>如果遇到情绪低落的情况，一定要及时想通，把自己拉出来（想通这个过程也能GET到不少新领悟）</p>
-</li>
-</ul>
-<h2 id="Decisional"><a href="#Decisional" class="headerlink" title="Decisional"></a>Decisional</h2><p>明天把切换订单状态的教程做完</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1597,7 +1588,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">120</span>
+                <span class="site-state-item-count">121</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
