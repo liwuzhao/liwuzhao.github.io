@@ -295,7 +295,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/05/JVM笔记/" itemprop="url">Iterator</a></h1>
+                <a class="post-title-link" href="/2019/01/05/JVM笔记/" itemprop="url">摘抄《深入理解java虚拟机》学习笔记</a></h1>
         
 
         <div class="post-meta">
@@ -431,125 +431,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2019/01/05/一致性哈希算法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/05/一致性哈希算法/" itemprop="url">Iterator</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-05T10:26:00+08:00">
-                2019-01-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅</p>
-</blockquote>
-<p>假如做了redis集群，有4台服务器，对于一条数据要存储在哪一台服务器上，假如我们用取模的方式计算。<code>hash(data) % 4</code>，假如<code>hash(data) % 4 = 2</code>，即在第二台服务器上。但是当我们添加一台服务器时，就变成了<code>hash(data) % 5</code>，显然结果不会是2，即所有的缓存数据位置都要发生变化。</p>
-<p>一致性hash算法也是用取模的方式，但是它是对对2^32取模，将空间画成一个圆环。每台服务器根据一定规则进行hash，确定服务器在圆环上的地址。然后将数据key使用相同的函数Hash计算出哈希值，并确定此数据在环上的位置，从此位置沿环顺时针“行走”，第一台遇到的服务器就是其应该定位到的服务器。</p>
-<p><img src="https://pic4.zhimg.com/80/v2-4fab60735dfae0bf511709e9d337789b_hd.jpg" alt="img"></p>
-<p>这样的话，假如 Node C 宕机了，只需要将 Object C 进行重定位，而A B D是不会受到影响的。假如增加一台服务器同理，受影响的数据仅仅是新服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它数据也不会受到影响。</p>
-<p>假如服务器数量较少，会容易发生数据倾斜，即大部分数据都落在同一个服务器上。为了解决这种数据倾斜问题，一致性Hash算法引入了虚拟节点机制，即对每一个服务节点计算多个哈希，每个计算结果位置都放置一个此服务节点，称为虚拟节点。具体做法可以在服务器IP或主机名的后面增加编号来实现。比如对服务器A，计算出Node A #1 , Node A#2，这几个虚拟节点的数据都落在服务器A上。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2019/01/05/shiro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -569,7 +450,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/05/shiro/" itemprop="url">Iterator</a></h1>
+                <a class="post-title-link" href="/2019/01/05/shiro/" itemprop="url">shiro笔记</a></h1>
         
 
         <div class="post-meta">
@@ -648,6 +529,125 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MySessionManager</span>  <span class="keyword">extends</span> <span class="title">DefaultWebSessionManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String AUTHORIZATION = <span class="string">"Authorization"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String REFERENCED_SESSION_ID_SOURCE = <span class="string">"Stateless request"</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MySessionManager</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Serializable <span class="title">getSessionId</span><span class="params">(ServletRequest request, ServletResponse response)</span> </span>&#123;</div><div class="line">        String id = WebUtils.toHttp(request).getHeader(AUTHORIZATION);</div><div class="line">        <span class="comment">//如果请求头中有 Authorization 则其值为sessionId</span></div><div class="line">        <span class="keyword">if</span> (!StringUtils.isEmpty(id)) &#123;</div><div class="line">            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE, REFERENCED_SESSION_ID_SOURCE);</div><div class="line">            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, id);</div><div class="line">            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID, Boolean.TRUE);</div><div class="line">            <span class="keyword">return</span> id;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">//否则按默认规则从cookie取sessionId</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.getSessionId(request, response);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>登录api中返回登录状态，前端通过该状态决定是否成功</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">Subject subject = SecurityUtils.getSubject();</div><div class="line"><span class="comment">// 构造一个token</span></div><div class="line">UsernamePasswordToken token = <span class="keyword">new</span> UsernamePasswordToken(user.getUsername(), user.getPassword());</div><div class="line"><span class="comment">// 调subject的登录方法</span></div><div class="line">subject.login(token);</div><div class="line"><span class="comment">// 成功的话可以返回 sessionId 给前端</span></div><div class="line"><span class="keyword">return</span> subject.getSession().getId());</div></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2019/01/05/一致性哈希算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/05/一致性哈希算法/" itemprop="url">一致性哈希算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-05T10:26:00+08:00">
+                2019-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>一些简单的学习笔记记录，摘抄别人的blog，方便自己翻阅</p>
+</blockquote>
+<p>假如做了redis集群，有4台服务器，对于一条数据要存储在哪一台服务器上，假如我们用取模的方式计算。<code>hash(data) % 4</code>，假如<code>hash(data) % 4 = 2</code>，即在第二台服务器上。但是当我们添加一台服务器时，就变成了<code>hash(data) % 5</code>，显然结果不会是2，即所有的缓存数据位置都要发生变化。</p>
+<p>一致性hash算法也是用取模的方式，但是它是对对2^32取模，将空间画成一个圆环。每台服务器根据一定规则进行hash，确定服务器在圆环上的地址。然后将数据key使用相同的函数Hash计算出哈希值，并确定此数据在环上的位置，从此位置沿环顺时针“行走”，第一台遇到的服务器就是其应该定位到的服务器。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-4fab60735dfae0bf511709e9d337789b_hd.jpg" alt="img"></p>
+<p>这样的话，假如 Node C 宕机了，只需要将 Object C 进行重定位，而A B D是不会受到影响的。假如增加一台服务器同理，受影响的数据仅仅是新服务器到其环空间中前一台服务器（即沿着逆时针方向行走遇到的第一台服务器）之间数据，其它数据也不会受到影响。</p>
+<p>假如服务器数量较少，会容易发生数据倾斜，即大部分数据都落在同一个服务器上。为了解决这种数据倾斜问题，一致性Hash算法引入了虚拟节点机制，即对每一个服务节点计算多个哈希，每个计算结果位置都放置一个此服务节点，称为虚拟节点。具体做法可以在服务器IP或主机名的后面增加编号来实现。比如对服务器A，计算出Node A #1 , Node A#2，这几个虚拟节点的数据都落在服务器A上。</p>
 
           
         
