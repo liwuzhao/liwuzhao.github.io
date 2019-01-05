@@ -276,6 +276,362 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/03/25/2017-03-25-orid2017324-2017324/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/25/2017-03-25-orid2017324-2017324/" itemprop="url">ORID <2017.3.24></a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-25T01:06:00+08:00">
+                2017-03-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###Objective</p>
+<blockquote>
+<p>做完了前一天剩下的影评网加分题<br>阅读一篇英语文章</p>
+</blockquote>
+<p>###Reflective</p>
+<blockquote>
+<p>今天主要学习时间是在早上，高峰也是在早上<br>低点是晚上看英语的时候，不够专心</p>
+</blockquote>
+<p>###Interpretive</p>
+<blockquote>
+<p>今天debug比前一天要耐心</p>
+</blockquote>
+<p>###Decisional</p>
+<blockquote>
+<p>还不错，今天投入的时间要少一些但是效率还是有的<br>补上元学习课第三课<br>xdite老师说不建议我们去看HTML，因为看不懂的话脑子会乱掉，但是我在w3school看的时候觉得还好，太难的也不会去纠结，主要是学习一些语法，明天打算继续学习一下HTML</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/03/24/2017-03-24-1635391/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/24/2017-03-24-1635391/" itemprop="url"><报错记录>实际发表文章出错</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-24T02:08:00+08:00">
+                2017-03-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在做加分题写一个影评网站时,<a href="https://fullstack.xinshengdaxue.com/posts/77" target="_blank" rel="external">实际发表影评</a>时报错<br><img src="https://ww4.sinaimg.cn/large/006tKfTcgy1fdxpl2ykzaj31hm0iagod.jpg" alt="">错误提示没有<code>movie_id</code><br>查看<code>db/schema</code>，发现没有<code>movie_id</code>，却有<code>group_id</code><br><img src="https://ww1.sinaimg.cn/large/006tKfTcgy1fdxpj2dfyuj30qy08sabh.jpg" alt=""></p>
+<p>原因：在前面建立Post的model架构时命令执行错了，创建了<code>group_id</code><br>正确命令应该是<br><code>rails g model post content:text movie_id:integer user_id:integer</code></p>
+<p>删除错误的model<br><code>rails d model post</code></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/03/23/2017-03-23-1632994/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wuzhao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wuzhao's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/03/23/2017-03-23-1632994/" itemprop="url"><报错记录>判断是否为拥有人时出错</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-23T16:54:00+08:00">
+                2017-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>###判断是否为拥有人时出错<br>在<a href="https://fullstack.xinshengdaxue.com/posts/74" target="_blank" rel="external">Step 4: 必须要是 group 拥有人，才能进入 edit，否则会被重导至首页，并显示错误信息</a>时报错</p>
+<p>原代码是</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span></span></div><div class="line">    <span class="keyword">if</span> current_user != @movie.user</div><div class="line">      redirect_to movie_path, <span class="symbol">alert:</span><span class="string">"You have no permission"</span></div><div class="line">    <span class="keyword">end</span></div><div class="line">        @movie = Movie.find(params[<span class="symbol">:id</span>])</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p>解决方法： 把<code>@movie = Movie.find(params[:id])</code>提前</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span></span></div><div class="line">    @movie = Movie.find(params[<span class="symbol">:id</span>])</div><div class="line">    <span class="keyword">if</span> current_user != @movie.user</div><div class="line">      redirect_to movie_path, <span class="symbol">alert:</span><span class="string">"You have no permission"</span></div><div class="line">    <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/03/23/2017-03-23-1632972/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1088,357 +1444,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/03/17/2017-03-17-1599380/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/17/2017-03-17-1599380/" itemprop="url">@group.user & group.user</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-17T14:29:00+08:00">
-                2017-03-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <figure class="highlight"><figcaption><span>index.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;% @groups.each do |group| %&gt;</div><div class="line">&lt;tr&gt;</div><div class="line">    &lt;td&gt;#&lt;/td&gt;</div><div class="line">    &lt;td&gt;&lt;%= link_to(group.title, group_path(group)) %&gt;&lt;/td&gt;</div><div class="line">    &lt;td&gt;&lt;%= group.description %&gt;&lt;/td&gt;</div><div class="line">    &lt;td&gt;&lt;%= group.user.email %&gt;&lt;/td&gt;</div><div class="line">    &lt;td&gt;</div><div class="line">      &lt;% if current_user &amp;&amp; current_user == group.user %&gt;</div><div class="line">          &lt;%= link_to("Edit", edit_group_path(group), class: "btn btn-primary btn-default")%&gt;</div><div class="line">          &lt;%= link_to("Delete", group_path(group),    class: "btn btn-primary btn-default",</div><div class="line">                      method: :delete, data: &#123; confirm: "Are you sure?" &#125; )%&gt;</div><div class="line">      &lt;% end %&gt;</div><div class="line">    &lt;/td&gt;</div><div class="line">&lt;/tr&gt;</div></pre></td></tr></table></figure>
-<figure class="highlight ruby"><figcaption><span>show.html.erb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;% <span class="keyword">if</span> current_user &amp;&amp; current_user == @group.user  %&gt;</div><div class="line">  &lt;%= link_to(<span class="string">"Edit"</span>, edit_group_path(@group), <span class="class"><span class="keyword">class</span>: "<span class="title">btn</span> <span class="title">btn</span>-<span class="title">primary</span> <span class="title">pull</span>-<span class="title">right</span>")%&gt;</span></div><div class="line">&lt;% <span class="keyword">end</span> %&gt;</div></pre></td></tr></table></figure>
-<p>在做是否为使用者的判断中，index里用的是<code>&lt;% if current_user &amp;&amp; current_user == group.user %&gt;</code><br>而show里面用的是<code>&lt;% if current_user &amp;&amp; current_user == @group.user  %&gt;</code><br>因为在index里，判断是在循环里面的，已经调用了controller里面的group</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/03/17/2017-03-17-1598706/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/17/2017-03-17-1598706/" itemprop="url">报错记录<8> flash用法 & 修改Gemfile</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-17T11:11:00+08:00">
-                2017-03-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><code>flash[:notice] = &quot;早安！你好！&quot;</code></p>
-<p><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fdq1kxjfrsj30o608y3zn.jpg" alt=""></p>
-<p><img src="https://ww4.sinaimg.cn/large/006tNc79gy1fdq1ky7tfcj310e0gyn8p.jpg" alt=""></p>
-<h2 id="修改Gemfile"><a href="#修改Gemfile" class="headerlink" title="修改Gemfile"></a>修改Gemfile</h2><p><a href="https://fullstack.xinshengdaxue.com/posts/55" target="_blank" rel="external">2-3 帮 Rails 项目穿上衣服“Bootstrap”</a></p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Gemfile</div><div class="line">	gem <span class="string">'bootstrap-sass'</span></div></pre></td></tr></table></figure>
-<p>每次修改完 Gemfile 都记得要command + s 保存 ，然后执行 bundle install</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://liwuzhao.github.io/2017/03/16/2017-03-16-rails101-bonus-question/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wuzhao">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/wuzhao1.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wuzhao's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/03/16/2017-03-16-rails101-bonus-question/" itemprop="url">Rails101 加分题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-16T04:44:00+08:00">
-                2017-03-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="https://fullstack.xinshengdaxue.com/posts/88" target="_blank" rel="external">8-3 可以看到自己发表的所有文章</a> 额外作业：练习自己实作“编辑”和“删除”按钮这两个功能！</p>
-<ul>
-<li>添加edit destroy update这三个action在</li>
-</ul>
-<figure class="highlight ruby"><figcaption><span>app/controller/posts_controller.rb</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">edit</span></span></div><div class="line">  @group = Group.find(params[<span class="symbol">:group_id</span>])</div><div class="line">  @post = Post.find(params[<span class="symbol">:id</span>])</div><div class="line">  @post.group = @group</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">destroy</span></span></div><div class="line">  @group = Group.find(params[<span class="symbol">:group_id</span>])</div><div class="line">  @post = Post.find(params[<span class="symbol">:id</span>])</div><div class="line">  @post.group = @group</div><div class="line"></div><div class="line">  @post.destroy</div><div class="line">  redirect_to account_posts_path, <span class="symbol">alert:</span> <span class="string">'Delete Success'</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span></span></div><div class="line">  @group = Group.find(params[<span class="symbol">:group_id</span>])</div><div class="line">  @post = Post.find(params[<span class="symbol">:id</span>])</div><div class="line">  @post.group = @group</div><div class="line">  @post.user = current_user</div><div class="line"></div><div class="line">  <span class="keyword">if</span> @post.update(post_params)</div><div class="line">    redirect_to account_posts_path, <span class="symbol">notice:</span> <span class="string">'Update Success'</span></div><div class="line">  <span class="keyword">else</span></div><div class="line">    render <span class="symbol">:edit</span></div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<ul>
-<li>执行<code>touch app/views/posts/edit.html.erb</code></li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;h2 class="text-center"&gt;编辑文章&lt;/h2&gt;</div><div class="line"></div><div class="line">&lt;div class="col-md-12"&gt;</div><div class="line"> &lt;%= simple_form_for [@group,@post] do |f| %&gt;</div><div class="line">   &lt;div class="form-group"&gt;</div><div class="line">     &lt;%= f.input :content, input_html: &#123; class: "form-control"&#125; %&gt;</div><div class="line">   &lt;/div&gt;</div><div class="line">   &lt;div class="form-actions"&gt;</div><div class="line">     &lt;%= f.submit "Submit", disable_with: "Submiting...", class: "btn btn-primary" %&gt;</div><div class="line">   &lt;/div&gt;</div><div class="line"> &lt;% end %&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1488,7 +1493,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">121</span>
+                <span class="site-state-item-count">124</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
